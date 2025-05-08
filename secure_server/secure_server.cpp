@@ -359,6 +359,9 @@ while (1) {  //main loop
 		
       printf("\nConnected to <<<Client>>> with IP address:%s, at Port:%s\n",clientHost, clientService);
 		
+      long x = RSAEncrypt(4,5,35);
+      printf("%li\n", x);
+      printf("%li", RSADecrypt(x, 29, 35));
 		
 //********************************************************************		
 //Communicate with the Client
