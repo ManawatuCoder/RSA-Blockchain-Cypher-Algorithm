@@ -14,18 +14,6 @@ void testStuff(){
     p = 257; q = 293; n = 75301; z = 24; e = 529; d = 24305;
 }
 
-int nonceify(char *input){
-    input = "AAA/n";
-    char randNum;
-    int NONCE = 1234;
-    int PUB_KEY1 = 3;
-    int PUB_KEY2 = 25777;
-    int length = strlen(input);
-    for (int i = 0; i < length; i++){
-        randNum = input[i] ^ NONCE;
-        NONCE = repeatSquare(randNum, PUB_KEY1, PUB_KEY2);
-    }
-}
 
 long repeatSquare(long x, long e, long n) {
     int y=1;//initialize y to 1, very important
@@ -43,12 +31,38 @@ long repeatSquare(long x, long e, long n) {
 }
 
 
+int nonceify(char *input){
+    input[0] = 'A';
+    char randNum = '0';
+    int NONCE = 1234;
+    int PUB_KEY1 = 3;
+    int PUB_KEY2 = 25777;
+    int length = strlen(input);
+    for (int i = 0; i < length; i++){
+        randNum = input[i] ^ NONCE;
+        NONCE = repeatSquare(randNum, PUB_KEY1, PUB_KEY2);
+    }
+    return randNum;
+}
+
+
+long modexp(long base, long exp, long mod) {
+    long result = 1;
+    base = base % mod;
+    while (exp > 0) {
+        if (exp % 2 == 1){
+            result = (result * base) % mod;
+        }
+        exp = exp / 2;
+        base = (base * base) % mod;
+    }
+    return result;
+}
+
 long RSAEncrypt(long m, long e, long n){
-    int x = pow(m, e);
-    return x % n;
+    return modexp(m, e, n);
 }
 
 long RSADecrypt(long c, long d, long n){
-    int x = pow(c, d);
-    return x % n;
+    return modexp(c, d, n);
 }
