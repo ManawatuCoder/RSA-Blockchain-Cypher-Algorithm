@@ -2,7 +2,11 @@
 #include <string.h>
 #include <cmath>
 #include <boost/algorithm/string.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
+
+
 using namespace std;
+using namespace boost::multiprecision;
 
 int somethingelse()
 {
@@ -41,29 +45,17 @@ int nonceify(char *input){
     int length = strlen(input);
     for (int i = 0; i < length; i++){
         randNum = input[i] ^ NONCE;
-        NONCE = repeatSquare(randNum, PUB_KEY1, PUB_KEY2);
+        NONCE = powm(randNum, PUB_KEY1, PUB_KEY2);
     }
     return randNum;
 }
 
 
-long modexp(long base, long exp, long mod) {
-    long result = 1;
-    base = base % mod;
-    while (exp > 0) {
-        if (exp % 2 == 1){
-            result = (result * base) % mod;
-        }
-        exp = exp / 2;
-        base = (base * base) % mod;
-    }
-    return result;
+cpp_int RSAEncrypt(cpp_int m, cpp_int e, cpp_int n){
+    return powm(m, e, n);
 }
 
-long RSAEncrypt(long m, long e, long n){
-    return modexp(m, e, n);
+cpp_int RSADecrypt(cpp_int c, cpp_int d, cpp_int n){
+    return powm(c, d, n);
 }
 
-long RSADecrypt(long c, long d, long n){
-    return modexp(c, d, n);
-}

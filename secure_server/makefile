@@ -2,7 +2,7 @@
 #Windows
 CC := g++
 TARGET := secure_server
-SRC := secure_server.cpp
+SRC := secure_server.cpp ../CryptoManager.cpp
 
 
 

@@ -1,9 +1,13 @@
 #ifndef SOMETHINGELSE_H
 #define SOMETHINGELSE_H
 
+#include <boost/multiprecision/cpp_int.hpp>
+
+using namespace boost::multiprecision;
+
 // Function declaration
 int somethingelse();
-long RSAEncrypt(long m, long e, long n);
-long RSADecrypt(long c, long d, long n);
+cpp_int RSAEncrypt(cpp_int m, cpp_int e, cpp_int n);
+cpp_int RSADecrypt(cpp_int c, cpp_int d, cpp_int n);
 
 #endif // SOMETHINGELSE_H

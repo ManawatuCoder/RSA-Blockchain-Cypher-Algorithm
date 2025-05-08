@@ -35,12 +35,11 @@
   #include <stdlib.h>
   #include <stdio.h>
   #include <iostream>
-
+  #include "../CryptoManager.h"
 
   #include <boost/multiprecision/cpp_int.hpp>   
   #include <boost/multiprecision/cpp_dec_float.hpp> 
   #include <boost/math/constants/constants.hpp> 
-
   using namespace boost::multiprecision; 
 
 
@@ -422,7 +421,7 @@ while (1) {  //main loop
 //********************************************************************
 	  printf("\n--------------------------------------------\n");
 	  printf("the <<<SERVER>>> is waiting to receive messages.\n");
-
+      std::cout << "The thing i did: " << RSADecrypt(RSAEncrypt(255, 529, 75301), 24305, 75301) << std::endl;
       while (1) {
          n = 0;
 //********************************************************************
@@ -447,6 +446,18 @@ while (1) {  //main loop
 //PROCESS REQUEST
 //********************************************************************			
          printf("MSG RECEIVED <--: %s\n",receive_buffer);
+         
+         cpp_int temp[256];
+         char temp2[256];
+         size_t j;
+         for(j = 0; j < strlen(receive_buffer); j++){
+            temp[j] = RSAEncrypt(receive_buffer[j], 529, 75301);
+         }
+         std::cout << temp << std::endl;
+         for(size_t i = 0; i < j; i++){
+            temp2[i] = (char) RSADecrypt(temp[i], 24305, 75301);
+         }
+         std::cout << temp2 << std::endl;
          //printBuffer("RECEIVE_BUFFER", receive_buffer);
 			
 //********************************************************************
