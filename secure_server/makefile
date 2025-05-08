@@ -1,40 +1,52 @@
-# Compiler and target
+
+#Windows
 CC := g++
 TARGET := secure_server
-EXTENSION := .exe
+SRC := secure_server.cpp
 
-# Source and object files
-SRC := secure_server.cpp ../CryptoManager.cpp
-OBJ := $(SRC:.cpp=.o)
 
-# OS detection
+
+# Detect the operating systemC:\CORE\Massey_Papers_2024\159342_2024\assignments\A2\cryptography\start-up_codes\TCP_secure_server_client_cross_platform_boost_v2\TCP_secure_server_client_cross_platform_boost\secure_serverC:\CORE\Massey_Papers_2024\159342_2024\assignments\A2\cryptography\start-up_codes\TCP_secure_server_client_cross_platform_boost_v2\TCP_secure_server_client_cross_platform_boost\secure_server
 ifeq ($(OS),Windows_NT)
-    CFLAGS := -c -std=c++11 -Wall -O2 -fconserve-space
-    LFLAGS := -lws2_32
-    CLEANUP := del /Q
+	# Windows
+# 	TARGET := $(TARGET)
+#   CFLAGS := -c -std=c++17 -Wall -O2 $(SRC) -I"C:/boost_1_87_0"
+    CFLAGS := -g -c -std=c++17 -Wall $(SRC) -I"C:/boost_1_87_0"
+    LFLAGS := -lws2_32 -L"C:/boost_1_87_0/libs" -I"C:/boost_1_87_0" -static-libgcc -static-libstdc++
+    EXTENSION = .exe
+	CLEANUP := del
+	CLEANUP_OBJS := del *.o
+	CLEANUP_OBJS := del *.exe
 else
-    UNAME_S := $(shell uname -s)
-    ifeq ($(UNAME_S),Darwin)
-        EXTENSION := .out
-        CFLAGS := -c -std=c++11 -Wall
-        LFLAGS :=
-        CLEANUP := rm -f
-    else ifeq ($(UNAME_S),Linux)
-        EXTENSION := .out
-        CFLAGS := -c -std=c++11 -Wall
-        LFLAGS :=
-        CLEANUP := rm -f
-    endif
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Darwin)
+		# macOS
+# 		TARGET := $(TARGET).out
+		EXTENSION = .out
+		CFLAGS := -c -std=c++17 -Wall -I /usr/local/include
+		LFLAGS := -L /usr/local/lib -lboost_system -lboost_filesystem
+		CLEANUP := rm -f
+		CLEANUP_OBJS := rm -f *.o
+	else ifeq ($(UNAME_S),Linux)
+		# Linux
+# 		TARGET := $(TARGET).out
+		EXTENSION = .out
+		CFLAGS := -c -std=c++17 -Wall -I /usr/local/include
+		LFLAGS := -L /usr/local/lib -lboost_system -lboost_filesystem
+		CLEANUP := rm -f
+		CLEANUP_OBJS := rm -f *.o
+	endif
 endif
 
-# Targets
-all: $(TARGET)$(EXTENSION)
 
-$(TARGET)$(EXTENSION): $(OBJ)
-	$(CC) $(OBJ) $(LFLAGS) -o $@
 
-%.o: %.cpp
-	$(CC) $(CFLAGS) $< -o $@
+
+$(TARGET)$(EXTENSION)	:  $(TARGET).o 
+	$(CC)  $(SRC) $(LFLAGS) -o $(TARGET)$(EXTENSION)
+			
+$(TARGET).o	 : 	$(SRC) 
+	$(CC) $(CFLAGS) $(SRC) 
 
 clean:
-	$(CLEANUP) *.o $(TARGET)$(EXTENSION)
+	$(CLEANUP) $(TARGET)
+	$(CLEANUP_OBJS)

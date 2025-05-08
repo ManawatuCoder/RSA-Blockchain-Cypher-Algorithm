@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <cmath>
+#include <boost/algorithm/string.hpp>
 using namespace std;
 
 int somethingelse()

@@ -23,6 +23,11 @@
   #include <netdb.h> //used by getnameinfo()
   #include <iostream>
 
+  #include <boost/multiprecision/cpp_int.hpp>   
+  #include <boost/multiprecision/cpp_dec_float.hpp> 
+  #include <boost/math/constants/constants.hpp>  
+
+  using namespace boost::multiprecision; 
 
 #elif defined __WIN32__
   #include <winsock2.h>
@@ -32,7 +37,11 @@
   #include <iostream>
 
 
+  #include <boost/multiprecision/cpp_int.hpp>   
+  #include <boost/multiprecision/cpp_dec_float.hpp> 
+  #include <boost/math/constants/constants.hpp> 
 
+  using namespace boost::multiprecision; 
 
 
   #define WSVERS MAKEWORD(2,2) /* Use the MAKEWORD(lowbyte, highbyte) macro declared in Windef.h */
@@ -47,11 +56,41 @@
 #define BUFFER_SIZE 500
 #define RBUFFER_SIZE 256
 
-using namespace std;
-  #include "../CryptoManager.h"
+// using namespace std;
 
 
 
+/////////////////////////////////////////////////////////////////////
+//BOOST
+
+int128_t boost_product(long long A, long long B) 
+{ 
+    int128_t ans = (int128_t) A * B; 
+    
+    return ans; 
+} 
+
+/////////////////////////////////////////////////////////////
+//Arbitrary precision data type: We can use any precision with the help of cpp_int data type if we are not sure about 
+//how much precision is needed in future. It automatically converts the desired precision at run-time.
+cpp_int boost_factorial(int num) 
+{ 
+   
+    cpp_int fact = 1; 
+    for (int i=num; i>1; --i)     
+        fact *= i; 
+    return fact; 
+} 
+
+////////////////////////////////////////////////////////////
+template<typename T> 
+inline T area_of_a_circle(T r) 
+{   
+   // pi represent predefined constant having value 
+   // 3.1415926535897932384... 
+   using boost::math::constants::pi; 
+   return pi<T>() * r * r; 
+}   
 /////////////////////////////////////////////////////////////////////
 
 void printBuffer(const char *header, char *buffer){
@@ -75,11 +114,27 @@ void printBuffer(const char *header, char *buffer){
 //*******************************************************************
 int main(int argc, char *argv[]) {
 	
+//********************************************************************
+// Boost library test
+//********************************************************************
+//example #1: 
+    std::cout << "\n===========================" << std::endl;     
+    std::cout << "BOOST BIG NUMBER Example #1: ";
+    std::cout << "\n===========================" << std::endl;     
+
+    long long first = 98745636214564698; 
+    long long second=7459874565236544789; 
+
+    std::cout << "Product of "<< first << " * "
+         << second << " = \n"
+         << boost_product(first,second) ; 
+
+    //-------------------------------------------------
 
 //********************************************************************
 // INITIALIZATION of the SOCKET library
 //********************************************************************
-   
+   //this is a comment
 	struct sockaddr_storage clientAddress; //IPV6
 	
 	char clientHost[NI_MAXHOST]; 
@@ -91,7 +146,10 @@ int main(int argc, char *argv[]) {
     char send_buffer[BUFFER_SIZE],receive_buffer[RBUFFER_SIZE];
     int n,bytes,addrlen;
 	char portNum[NI_MAXSERV];
-
+	// char username[80];
+	// char passwd[80];
+		
+   //memset(&localaddr,0,sizeof(localaddr));
 
 
 #if defined __unix__ || defined __APPLE__
@@ -303,7 +361,6 @@ if (s == INVALID_SOCKET) {
 //********************************************************************
 while (1) {  //main loop
 	  printf("\n<<<SERVER>>> is listening at PORT: %s\n", portNum);
-     somethingelse();
       addrlen = sizeof(clientAddress); //IPv4 & IPv6-compliant
 		
 //********************************************************************
@@ -359,9 +416,6 @@ while (1) {  //main loop
 		
       printf("\nConnected to <<<Client>>> with IP address:%s, at Port:%s\n",clientHost, clientService);
 		
-      long x = RSAEncrypt(4,5,35);
-      printf("%li\n", x);
-      printf("%li", RSADecrypt(x, 29, 35));
 		
 //********************************************************************		
 //Communicate with the Client

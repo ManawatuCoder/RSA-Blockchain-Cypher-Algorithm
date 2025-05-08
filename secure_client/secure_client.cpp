@@ -28,6 +28,11 @@
   #include <netdb.h> //used by getnameinfo()
   #include <iostream>
 
+  #include <boost/multiprecision/cpp_int.hpp>   
+  #include <boost/multiprecision/cpp_dec_float.hpp> 
+  #include <boost/math/constants/constants.hpp> 
+
+  using namespace boost::multiprecision; 
 
 #elif defined __WIN32__
   #include <winsock2.h>
@@ -36,6 +41,12 @@
   #include <stdio.h>
   #include <iostream>
 
+
+  #include <boost/multiprecision/cpp_int.hpp>   
+  #include <boost/multiprecision/cpp_dec_float.hpp> 
+  #include <boost/math/constants/constants.hpp> 
+
+  using namespace boost::multiprecision; 
 
   #define WSVERS MAKEWORD(2,2) /* Use the MAKEWORD(lowbyte, highbyte) macro declared in Windef.h */
                     //The high-order byte specifies the minor version number; 
