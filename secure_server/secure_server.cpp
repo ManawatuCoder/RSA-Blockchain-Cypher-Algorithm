@@ -48,7 +48,7 @@
 #define RBUFFER_SIZE 256
 
 using namespace std;
-
+  #include "../CryptoManager.h"
 
 
 
@@ -303,6 +303,7 @@ if (s == INVALID_SOCKET) {
 //********************************************************************
 while (1) {  //main loop
 	  printf("\n<<<SERVER>>> is listening at PORT: %s\n", portNum);
+     somethingelse();
       addrlen = sizeof(clientAddress); //IPv4 & IPv6-compliant
 		
 //********************************************************************

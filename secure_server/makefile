@@ -1,49 +1,40 @@
-
-#Windows
+# Compiler and target
 CC := g++
 TARGET := secure_server
-SRC := secure_server.cpp
+EXTENSION := .exe
 
+# Source and object files
+SRC := secure_server.cpp ../CryptoManager.cpp
+OBJ := $(SRC:.cpp=.o)
 
-
-# Detect the operating system
+# OS detection
 ifeq ($(OS),Windows_NT)
-	# Windows
-# 	TARGET := $(TARGET)
-	CFLAGS := -c -std=c++11 -Wall -O2 -fconserve-space $(SRC) 
-    LFLAGS := -lws2_32 
-    EXTENSION = .exe
-	CLEANUP := del
-	CLEANUP_OBJS := del *.o
+    CFLAGS := -c -std=c++11 -Wall -O2 -fconserve-space
+    LFLAGS := -lws2_32
+    CLEANUP := del /Q
 else
-	UNAME_S := $(shell uname -s)
-	ifeq ($(UNAME_S),Darwin)
-		# macOS
-		EXTENSION = .out
-		CFLAGS := -c -std=c++11 -Wall 
-		LFLAGS := 
-		CLEANUP := rm -f
-		CLEANUP_OBJS := rm -f *.o
-	else ifeq ($(UNAME_S),Linux)
-		# Linux
-
-		EXTENSION = .out
-		CFLAGS := -c -std=c++11 -Wall 
-		LFLAGS := 
-		CLEANUP := rm -f
-		CLEANUP_OBJS := rm -f *.o
-	endif
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Darwin)
+        EXTENSION := .out
+        CFLAGS := -c -std=c++11 -Wall
+        LFLAGS :=
+        CLEANUP := rm -f
+    else ifeq ($(UNAME_S),Linux)
+        EXTENSION := .out
+        CFLAGS := -c -std=c++11 -Wall
+        LFLAGS :=
+        CLEANUP := rm -f
+    endif
 endif
 
+# Targets
+all: $(TARGET)$(EXTENSION)
 
+$(TARGET)$(EXTENSION): $(OBJ)
+	$(CC) $(OBJ) $(LFLAGS) -o $@
 
-
-$(TARGET)$(EXTENSION)	:  $(TARGET).o 
-	$(CC)  $(SRC) $(LFLAGS) -o $(TARGET)$(EXTENSION)
-			
-$(TARGET).o	 : 	$(SRC) 
-	$(CC) $(CFLAGS) $(SRC) 
+%.o: %.cpp
+	$(CC) $(CFLAGS) $< -o $@
 
 clean:
-	$(CLEANUP) $(TARGET)
-	$(CLEANUP_OBJS)
+	$(CLEANUP) *.o $(TARGET)$(EXTENSION)
