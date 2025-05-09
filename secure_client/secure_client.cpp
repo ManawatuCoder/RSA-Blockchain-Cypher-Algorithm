@@ -383,7 +383,7 @@ hints.ai_protocol = IPPROTO_TCP;
 	}
 
 	for(int i = 0; i < j; i++){
-		std::cout << (char) temp[i].convert_to<int>();
+		std::cout << "servers public key is:  " << (char) temp[i].convert_to<int>();
 	}
 	
 //*******************************************************************
