@@ -40,6 +40,8 @@
   #include <boost/multiprecision/cpp_int.hpp>   
   #include <boost/multiprecision/cpp_dec_float.hpp> 
   #include <boost/math/constants/constants.hpp> 
+
+
   using namespace boost::multiprecision; 
 
 
@@ -427,6 +429,9 @@ while (1) {  //main loop
       //*****************
       cpp_int pubKeyP1 = 12345;
       cpp_int pubKeyP2 = 69420;
+
+      std::vector<cpp_int> key = generate_rsa_key(pubKeyP1, pubKeyP2);
+
       //pubKey parts MUST BE < modulus!!
       //*****************
       size_t j = 1;
