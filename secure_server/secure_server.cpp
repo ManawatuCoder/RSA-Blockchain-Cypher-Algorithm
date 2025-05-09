@@ -414,7 +414,39 @@ while (1) {  //main loop
                     NI_NUMERICHOST);
 		
       printf("\nConnected to <<<Client>>> with IP address:%s, at Port:%s\n",clientHost, clientService);
-		
+
+//********************************************************************		
+//Encrypt public key, and send to the Client
+//********************************************************************      
+      cpp_int temp;
+      cpp_int temp2;
+      int dCA = 529;
+      int modulus = 75301;
+      int eCA = 24305;
+
+      //*****************
+      cpp_int pubKeyP1 = 12345;
+      cpp_int pubKeyP2 = 69420;
+      //pubKey parts MUST BE < modulus!!
+      //*****************
+      size_t j = 1;
+      temp = RSAEncrypt(pubKeyP1, dCA, modulus);
+      //Modify below prints for assignment specs
+      std::cout << temp << std::endl;
+
+      for(size_t i = 0; i < j; i++){
+         temp2 = RSADecrypt(temp, eCA, modulus);
+      }
+      std::cout << temp2 << std::endl;
+
+      temp = RSAEncrypt(pubKeyP2, dCA, modulus);
+      //Modify below prints for assignment specs
+      std::cout << temp << std::endl;
+
+      for(size_t i = 0; i < j; i++){
+         temp2 = RSADecrypt(temp, eCA, modulus);
+      }
+      std::cout << temp2 << std::endl;
 		
 //********************************************************************		
 //Communicate with the Client

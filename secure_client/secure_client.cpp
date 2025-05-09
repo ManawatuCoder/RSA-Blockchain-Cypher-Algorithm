@@ -351,6 +351,12 @@ hints.ai_protocol = IPPROTO_TCP;
 		//--------------------------------------------------------------------------------
 		
 	}
+
+//*******************************************************************
+//Receive and process servers public key
+//*******************************************************************
+
+	cpp_int serverKeyP1 = recv(s, &receive_buffer[n], 1, 0);
 	
 //*******************************************************************
 //Get input while user don't type "."
@@ -411,7 +417,9 @@ hints.ai_protocol = IPPROTO_TCP;
 	         }
 #endif
 
-	         
+	         //Decrypt response.
+			 //Strip padding? Specs say we might want some?
+			 
 	         if (receive_buffer[n] == '\n') {  /*end on a LF*/
 	            receive_buffer[n] = '\0';
 	            break;
