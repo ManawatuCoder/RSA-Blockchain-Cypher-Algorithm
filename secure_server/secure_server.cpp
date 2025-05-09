@@ -431,52 +431,49 @@ while (1) {  //main loop
       //pubKey parts MUST BE < modulus!!
       //*****************
       size_t j;
+      size_t i;
+      std::string tempString;
+      const char *sendKey;
+         
+         tempString = pubKeyP1.str();
+         sendKey = tempString.c_str();
 
-      std::string tempString = pubKeyP1.str();
-      const char *sendKey1 = tempString.c_str();
+         for(j = 0; j < tempString.length(); j++){
+            //Encrypt char by char
+            temp[j] = RSAEncrypt(sendKey[j], dCA, modulus);
+            //std::cout << temp[j];
+         }
 
-      for(j = 0; j < tempString.length(); j++){
-         //Encrypt char by char
-         temp[j] = RSAEncrypt(sendKey1[j], dCA, modulus);
-         std::cout << temp[j];
-      }
+         std::string encryptedStr;
 
-      std::string encryptedStr;
+         for(i = 0; i < j; i++){
+            encryptedStr += temp[i].str() + " ";
+            // For Testing Purposes
+            // temp2[i] = (char) RSADecrypt(temp[i], eCA, modulus);
+            // std::cout << temp2[i];
+         }
+         encryptedStr += ",";
 
-      std::cout << std::endl;
-      for(size_t i = 0; i < j; i++){
-         encryptedStr += temp[i].str() + " ";
-         // For Testing Purposes
-         // temp2[i] = (char) RSADecrypt(temp[i], eCA, modulus);
-         // std::cout << temp2[i];
-      }
+         tempString = pubKeyP2.str();
+         sendKey = tempString.c_str();
+         int priorlength = j;
 
-      //Send through length of key
-      int lengthOfEncryptedData = encryptedStr.length();
-      std::cout << lengthOfEncryptedData;
-      send(ns, (char *) &lengthOfEncryptedData, sizeof(lengthOfEncryptedData), 0);
+         for(j; j < priorlength + tempString.length(); j++){
+            temp[j] = RSAEncrypt(sendKey[j - priorlength], dCA, modulus);
+            //std::cout << temp[j];
+         }
+         for(i; i < j; i++){
+            encryptedStr += temp[i].str() + " ";
+         }
 
-      // Send through key
-      send(ns, encryptedStr.c_str(), lengthOfEncryptedData, 0);
+         //Send through length of key
+         int lengthOfEncryptedData = encryptedStr.length();
+         // std::cout << lengthOfEncryptedData;
+         send(ns, (char *) &lengthOfEncryptedData, sizeof(lengthOfEncryptedData), 0);
 
+         // Send through key
+         send(ns, encryptedStr.c_str(), lengthOfEncryptedData, 0);
 
-      // temp = RSAEncrypt(pubKeyP1, dCA, modulus);
-      // //Modify below prints for assignment specs
-      // std::cout << temp << std::endl;
-
-      // for(size_t i = 0; i < j; i++){
-      //    temp2 = RSADecrypt(temp, eCA, modulus);
-      // }
-      // std::cout << temp2 << std::endl;
-
-      // temp = RSAEncrypt(pubKeyP2, dCA, modulus);
-      // //Modify below prints for assignment specs
-      // std::cout << temp << std::endl;
-
-      // for(size_t i = 0; i < j; i++){
-      //    temp2 = RSADecrypt(temp, eCA, modulus);
-      // }
-      // std::cout << temp2 << std::endl;
 		
 //********************************************************************		
 //Communicate with the Client

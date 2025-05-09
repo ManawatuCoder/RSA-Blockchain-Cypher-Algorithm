@@ -363,31 +363,42 @@ hints.ai_protocol = IPPROTO_TCP;
 	cpp_int temp[256];
 	int len;
 	recv(s, (char*) (&len), sizeof(len), 0);
-	char* buffer= new char[len];
 
 	int modulus = 75301;
     int eCA = 24305;
 
+	std::string serverPubKeyString[2]={""};
+	
+	char* buffer= new char[len];
 	bytes = recv(s, buffer, len, 0);
 
 	std::string encryptedKey;
 	int j = 0;
+	bool first = true;
 	for(int i = 0; i < len; i++){
+		if(buffer[i] == ','){
+			first = false;
+			continue;
+		}
 		if(buffer[i] != ' '){
 			encryptedKey += buffer[i];
 		}else{
-			temp[j] = RSADecrypt(cpp_int(encryptedKey), eCA, modulus);
-			j++;
+			cpp_int decrypted = RSADecrypt(cpp_int(encryptedKey), eCA, modulus);
 			encryptedKey = "";
+
+			if(first){
+				serverPubKeyString[0] += decrypted.convert_to<int>();
+			}else{
+				serverPubKeyString[1] += decrypted.convert_to<int>();
+			}
+
+			j++;
 		}
 	}
-
-	std::string serverPubKeyString = "";
-	for(int i = 0; i < j; i++){
-		serverPubKeyString += temp[i].convert_to<int>();
-	}
-	cout << "Servers public key is:  " << serverPubKeyString << endl;
-	cpp_int serverPubKey(serverPubKeyString);
+	
+	std::cout << "Servers public key is:  " << serverPubKeyString[0] << "," << serverPubKeyString[1] << endl;
+	cpp_int serverPubKey1(serverPubKeyString[0]);
+	cpp_int serverPubKey2(serverPubKeyString[1]);
 	
 //*******************************************************************
 //Get input while user don't type "."
