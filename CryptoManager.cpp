@@ -63,21 +63,29 @@ cpp_int RSADecrypt(cpp_int c, cpp_int d, cpp_int n){
 }
 
 
-
+// Added a flag to this function to generate CA keys
+// This flag overrides the p, q and e values to fixed ones
+// This function generates RSA keys based on two prime numbers p and q.
+// It calculates n, z, e, and d, and returns a vector containing {n, e, d}.
 vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false) {
     cpp_int n = p * q;
     cpp_int z = (p - 1) * (q - 1);
     cpp_int e = 2;
     cpp_int d = 0;
 
-    if(CA) e = 100000000;
-
-    // Find e such that 1 < e < z and gcd(e, z) = 1
-    for (; e < z; e++) {
-        if (gcd(e, z) == 1) {
-            break;
+    if(CA) {
+        e = 100000001;
+        p = 961749037;
+        q = 961749157;
+    } else {
+        // Find e such that 1 < e < z and gcd(e, z) = 1
+        for (; e < z; e++) {
+            if (gcd(e, z) == 1) {
+                break;
+            }
         }
     }
+
 
     // Find d
     // Extended Euclidean Algorithm to find d
@@ -94,9 +102,13 @@ vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false) {
     }
     return keys;
 }
+
+// Pointless function to generate CA keys
 vector<cpp_int> getCAkeys(){
     return generate_rsa_key(961749037, 961749157, true);
 }
+
+
 cpp_int euclidean_algo(cpp_int x, cpp_int y) {
     cpp_int remainder = 0;
 
@@ -144,6 +156,7 @@ cpp_int extended_euclidean_algo(cpp_int e, cpp_int z) {
     return y.back();
 }
 
+// Just another name for the extended Euclidean algorithm
 cpp_int modinv(cpp_int e, cpp_int z) {
     cpp_int a = z, b = e, x = 0, y = 1;
 
