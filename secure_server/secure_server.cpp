@@ -423,7 +423,7 @@ while (1) {  //main loop
       char temp2[256];
       int dCA = 529;
       int modulus = 75301;
-      int eCA = 24305;
+      //int eCA = 24305; //For testing
 
       //*****************
       cpp_int pubKeyP1 = 12345;
@@ -436,6 +436,7 @@ while (1) {  //main loop
       const char *sendKey1 = tempString.c_str();
 
       for(j = 0; j < tempString.length(); j++){
+         //Encrypt char by char
          temp[j] = RSAEncrypt(sendKey1[j], dCA, modulus);
          std::cout << temp[j];
       }
@@ -445,8 +446,6 @@ while (1) {  //main loop
       std::cout << std::endl;
       for(size_t i = 0; i < j; i++){
          encryptedStr += temp[i].str() + " ";
-
-
          // For Testing Purposes
          // temp2[i] = (char) RSADecrypt(temp[i], eCA, modulus);
          // std::cout << temp2[i];
