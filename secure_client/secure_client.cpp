@@ -27,6 +27,8 @@
   #include <arpa/inet.h>
   #include <netdb.h> //used by getnameinfo()
   #include <iostream>
+  #include <string>
+  #include "../CryptoManager.h"
 
   #include <boost/multiprecision/cpp_int.hpp>   
   #include <boost/multiprecision/cpp_dec_float.hpp> 
@@ -40,6 +42,8 @@
   #include <stdlib.h>
   #include <stdio.h>
   #include <iostream>
+  #include <string>
+  #include "../cryptomanager.h"
 
 
   #include <boost/multiprecision/cpp_int.hpp>   
@@ -356,21 +360,31 @@ hints.ai_protocol = IPPROTO_TCP;
 //Receive and process servers public key
 //*******************************************************************
 
+	cpp_int temp[256];
 	int len;
 	recv(s, (char*) (&len), sizeof(len), 0);
 	char* buffer= new char[len];
 
+	int modulus = 75301;
+    int eCA = 24305;
+
 	bytes = recv(s, buffer, len, 0);
 
-	std:string encryptedKey;
-	for(size_t i = 0; i < len; i++){
+	std::string encryptedKey;
+	int j = 0;
+	for(int i = 0; i < len; i++){
 		if(buffer[i] != ' '){
 			encryptedKey += buffer[i];
+		}else{
+			temp[j] = RSADecrypt(cpp_int(encryptedKey), eCA, modulus);
+			j++;
+			encryptedKey = "";
 		}
 	}
-	std::string decryptedKey = "1";
 
-	std::cout << encryptedKey;
+	for(int i = 0; i < j; i++){
+		std::cout << (char) temp[i].convert_to<int>();
+	}
 	
 //*******************************************************************
 //Get input while user don't type "."
