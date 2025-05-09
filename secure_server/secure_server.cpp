@@ -22,6 +22,7 @@
   #include <arpa/inet.h>
   #include <netdb.h> //used by getnameinfo()
   #include <iostream>
+  #include "../CryptoManager.h"
 
   #include <boost/multiprecision/cpp_int.hpp>   
   #include <boost/multiprecision/cpp_dec_float.hpp> 
@@ -420,11 +421,11 @@ while (1) {  //main loop
 //********************************************************************		
 //Encrypt public key, and send to the Client
 //********************************************************************      
-      cpp_int temp;
-      cpp_int temp2;
+      cpp_int temp[256];
+      char temp2[256];
       int dCA = 529;
       int modulus = 75301;
-      int eCA = 24305;
+      //int eCA = 24305; //For testing
 
       //*****************
       cpp_int pubKeyP1 = 12345;
@@ -440,24 +441,53 @@ while (1) {  //main loop
 
       //pubKey parts MUST BE < modulus!!
       //*****************
-      size_t j = 1;
-      temp = RSAEncrypt(pubKeyP1, dCA, modulus);
-      //Modify below prints for assignment specs
-      std::cout << temp << std::endl;
+      size_t j;
 
-      for(size_t i = 0; i < j; i++){
-         temp2 = RSADecrypt(temp, eCA, modulus);
+      std::string tempString = pubKeyP1.str();
+      const char *sendKey1 = tempString.c_str();
+
+      for(j = 0; j < tempString.length(); j++){
+         //Encrypt char by char
+         temp[j] = RSAEncrypt(sendKey1[j], dCA, modulus);
+         std::cout << temp[j];
       }
-      std::cout << temp2 << std::endl;
 
-      temp = RSAEncrypt(pubKeyP2, dCA, modulus);
-      //Modify below prints for assignment specs
-      std::cout << temp << std::endl;
+      std::string encryptedStr;
 
+      std::cout << std::endl;
       for(size_t i = 0; i < j; i++){
-         temp2 = RSADecrypt(temp, eCA, modulus);
+         encryptedStr += temp[i].str() + " ";
+         // For Testing Purposes
+         // temp2[i] = (char) RSADecrypt(temp[i], eCA, modulus);
+         // std::cout << temp2[i];
       }
-      std::cout << temp2 << std::endl;
+
+      //Send through length of key
+      int lengthOfEncryptedData = encryptedStr.length();
+      std::cout << lengthOfEncryptedData;
+      send(ns, (char *) &lengthOfEncryptedData, sizeof(lengthOfEncryptedData), 0);
+
+      // Send through key
+      send(ns, encryptedStr.c_str(), lengthOfEncryptedData, 0);
+
+
+      // temp = RSAEncrypt(pubKeyP1, dCA, modulus);
+      // //Modify below prints for assignment specs
+      // std::cout << temp << std::endl;
+
+      // for(size_t i = 0; i < j; i++){
+      //    temp2 = RSADecrypt(temp, eCA, modulus);
+      // }
+      // std::cout << temp2 << std::endl;
+
+      // temp = RSAEncrypt(pubKeyP2, dCA, modulus);
+      // //Modify below prints for assignment specs
+      // std::cout << temp << std::endl;
+
+      // for(size_t i = 0; i < j; i++){
+      //    temp2 = RSADecrypt(temp, eCA, modulus);
+      // }
+      // std::cout << temp2 << std::endl;
 		
 //********************************************************************		
 //Communicate with the Client
