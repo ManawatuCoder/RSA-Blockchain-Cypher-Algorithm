@@ -399,6 +399,16 @@ hints.ai_protocol = IPPROTO_TCP;
 	std::cout << "Servers public key is:  " << serverPubKeyString[0] << "," << serverPubKeyString[1] << endl;
 	cpp_int serverPubKey1(serverPubKeyString[0]);
 	cpp_int serverPubKey2(serverPubKeyString[1]);
+
+	send(s,"ACK 226 public key received",27,0);
+
+
+//*******************************************************************
+//Send e(nonce) rsaencrypted.
+//*******************************************************************
+
+	cpp_int NONCE = 1234; //Needs setting with a valid value.
+
 	
 //*******************************************************************
 //Get input while user don't type "."
@@ -411,6 +421,18 @@ hints.ai_protocol = IPPROTO_TCP;
 		printf("error using fgets()\n");
 		exit(1);
 	}
+
+	std::string encrypto = "";
+	cpp_int privateKey; //Needs setting
+	encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),serverPubKey1.convert_to<int>(),serverPubKey2.convert_to<int>());
+	
+	std::string decrypto = "";
+	std::string character = "";
+
+	decrypto = deNonceify(encrypto.c_str(),NONCE.convert_to<int>(),privateKey,serverPubKey2);
+
+
+	cout << decrypto << endl;
     
 	//while ((strncmp(send_buffer,".",1) != 0) && (strncmp(send_buffer,"\n",1) != 0)) {
 	while ((strncmp(send_buffer,".",1) != 0)) {

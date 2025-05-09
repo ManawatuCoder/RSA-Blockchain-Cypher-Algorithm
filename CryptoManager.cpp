@@ -36,27 +36,42 @@ long repeatSquare(long x, long e, long n) {
 }
 
 
-int nonceify(char *input, int NONCE, int PUB_KEY1, int PUB_KEY2){
-    input[0] = 'A';
-    char randNum = '0';
-    int length = strlen(input);
-
-    NONCE = 1234;
-    PUB_KEY1 = 3;
-    PUB_KEY2 = 25777;
-    for (int i = 0; i < length; i++){
-        randNum = input[i] ^ NONCE;
-        NONCE = powm(randNum, PUB_KEY1, PUB_KEY2);
-    }
-    return randNum;
-}
-
-
 cpp_int RSAEncrypt(cpp_int m, cpp_int e, cpp_int n){
     return powm(m, e, n);
 }
 
 cpp_int RSADecrypt(cpp_int c, cpp_int d, cpp_int n){
     return powm(c, d, n);
+}
+
+
+std::string nonceify(const char *input, int NONCE, cpp_int PUB_KEY1, cpp_int PUB_KEY2){
+    std::string result = "";
+    int randNum = 0;
+    int length = strlen(input);
+
+    for (int i = 0; i < length; i++){
+        randNum = input[i] ^ NONCE;
+        NONCE = RSAEncrypt(cpp_int(randNum), PUB_KEY1, PUB_KEY2).convert_to<int>();
+        result += std::to_string(NONCE) + " ";
+    }
+    return result;
+}
+
+
+std::string deNonceify(const char *input, int NONCE, cpp_int PRIV_KEY, cpp_int PUB_KEY_N){
+    std::string result = "";
+    int decryptedVal = 0;
+    std::istringstream iss(input);
+    std::string token;
+    
+    while (iss >> token){
+        cpp_int cipherVal(token);
+        decryptedVal = RSADecrypt(cipherVal, PRIV_KEY, PUB_KEY_N).convert_to<int>();
+        char originalChar = static_cast<char>(decryptedVal ^ NONCE);
+        NONCE = cipherVal.convert_to<int>();
+        result += originalChar;
+    }
+    return result;
 }
 

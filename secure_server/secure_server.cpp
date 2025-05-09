@@ -426,8 +426,8 @@ while (1) {  //main loop
       //int eCA = 24305; //For testing
 
       //*****************
-      cpp_int pubKeyP1 = 12345;
-      cpp_int pubKeyP2 = 69420;
+      cpp_int pubKeyP1 = cpp_int("41471835725835693615392231785387359255026153655283352858524806147640645812386279");
+      cpp_int pubKeyP2 = cpp_int("65537");
       //pubKey parts MUST BE < modulus!!
       //*****************
       size_t j;
@@ -473,6 +473,15 @@ while (1) {  //main loop
 
          // Send through key
          send(ns, encryptedStr.c_str(), lengthOfEncryptedData, 0);
+
+         bytes = recv(ns, &receive_buffer[n], 1, 0);
+         
+         if ((bytes < 0) || (bytes == 0)){
+            std::cout << "problems arose. ACK not received.";
+         }else{ //CHECK IF ACK RECEIVED IS ACTUALLY RECEIVED
+            //NOT IMPLEMENTED YET
+            std::cout << receive_buffer << std::endl;
+         }
 
 		
 //********************************************************************		
