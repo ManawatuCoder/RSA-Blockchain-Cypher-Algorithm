@@ -356,7 +356,21 @@ hints.ai_protocol = IPPROTO_TCP;
 //Receive and process servers public key
 //*******************************************************************
 
-	cpp_int serverKeyP1 = recv(s, &receive_buffer[n], 1, 0);
+	int len;
+	recv(s, (char*) (&len), sizeof(len), 0);
+	char* buffer= new char[len];
+
+	bytes = recv(s, buffer, len, 0);
+
+	std:string encryptedKey;
+	for(size_t i = 0; i < len; i++){
+		if(buffer[i] != ' '){
+			encryptedKey += buffer[i];
+		}
+	}
+	std::string decryptedKey = "1";
+
+	std::cout << encryptedKey;
 	
 //*******************************************************************
 //Get input while user don't type "."
@@ -417,9 +431,9 @@ hints.ai_protocol = IPPROTO_TCP;
 	         }
 #endif
 
-	         //Decrypt response.
+	         //Decrypt response?
 			 //Strip padding? Specs say we might want some?
-			 
+
 	         if (receive_buffer[n] == '\n') {  /*end on a LF*/
 	            receive_buffer[n] = '\0';
 	            break;
