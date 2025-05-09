@@ -382,10 +382,12 @@ hints.ai_protocol = IPPROTO_TCP;
 		}
 	}
 
-	std::cout << "servers public key is:  ";
+	std::string serverPubKeyString = "";
 	for(int i = 0; i < j; i++){
-		std::cout << (char) temp[i].convert_to<int>();
+		serverPubKeyString += temp[i].convert_to<int>();
 	}
+	cout << "Servers public key is:  " << serverPubKeyString << endl;
+	cpp_int serverPubKey(serverPubKeyString);
 	
 //*******************************************************************
 //Get input while user don't type "."

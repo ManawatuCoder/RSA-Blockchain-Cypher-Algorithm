@@ -36,13 +36,14 @@ long repeatSquare(long x, long e, long n) {
 }
 
 
-int nonceify(char *input){
+int nonceify(char *input, int NONCE, int PUB_KEY1, int PUB_KEY2){
     input[0] = 'A';
     char randNum = '0';
-    int NONCE = 1234;
-    int PUB_KEY1 = 3;
-    int PUB_KEY2 = 25777;
     int length = strlen(input);
+
+    NONCE = 1234;
+    PUB_KEY1 = 3;
+    PUB_KEY2 = 25777;
     for (int i = 0; i < length; i++){
         randNum = input[i] ^ NONCE;
         NONCE = powm(randNum, PUB_KEY1, PUB_KEY2);
