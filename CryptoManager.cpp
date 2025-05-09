@@ -62,14 +62,18 @@ cpp_int RSADecrypt(cpp_int c, cpp_int d, cpp_int n){
     return powm(c, d, n);
 }
 
-vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q) {
+
+
+vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false) {
     cpp_int n = p * q;
     cpp_int z = (p - 1) * (q - 1);
-    cpp_int e = 0;
+    cpp_int e = 2;
     cpp_int d = 0;
 
-    // Find e
-    for (e = 2; e < z; e++) {
+    if(CA) e = 100000000;
+
+    // Find e such that 1 < e < z and gcd(e, z) = 1
+    for (; e < z; e++) {
         if (gcd(e, z) == 1) {
             break;
         }
@@ -84,9 +88,15 @@ vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q) {
     keys.push_back(e);
     keys.push_back(d);
 
+    // Print the keys
+    for(int i=0; i<keys.size(); i++){
+        std::cout << keys[i] << std::endl;
+    }
     return keys;
 }
-
+vector<cpp_int> getCAkeys(){
+    return generate_rsa_key(961749037, 961749157, true);
+}
 cpp_int euclidean_algo(cpp_int x, cpp_int y) {
     cpp_int remainder = 0;
 

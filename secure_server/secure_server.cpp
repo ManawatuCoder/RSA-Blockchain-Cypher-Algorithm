@@ -430,7 +430,13 @@ while (1) {  //main loop
       cpp_int pubKeyP1 = 12345;
       cpp_int pubKeyP2 = 69420;
 
-      std::vector<cpp_int> key = generate_rsa_key(pubKeyP1, pubKeyP2);
+      std::vector<cpp_int> key2 = generate_rsa_key(257, 293);
+      std::vector<cpp_int> key = getCAkeys();
+      if(key[0]==75301&&key[1]==3&&key[2]==49835) {
+         std::cout << "Key is valid" << std::endl;
+      } else {
+         std::cout << "Key is invalid" << std::endl;
+      }
 
       //pubKey parts MUST BE < modulus!!
       //*****************
@@ -458,7 +464,7 @@ while (1) {  //main loop
 //********************************************************************
 	  printf("\n--------------------------------------------\n");
 	  printf("the <<<SERVER>>> is waiting to receive messages.\n");
-      std::cout << "The thing i did: " << RSADecrypt(RSAEncrypt(255, 529, 75301), 24305, 75301) << std::endl;
+      std::cout << "The thing i did: " << RSADecrypt(RSAEncrypt(255, 100000001, 924961325580311809), 790492195945179041, 924961325580311809) << std::endl;
       while (1) {
          n = 0;
 //********************************************************************
