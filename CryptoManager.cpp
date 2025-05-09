@@ -97,9 +97,11 @@ vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false) {
     keys.push_back(d);
 
     // Print the keys
-    for(int i=0; i<keys.size(); i++){
-        std::cout << keys[i] << std::endl;
-    }
+    
+    std::cout << "N: " << keys[0] << std::endl;
+    std::cout << "E: " << keys[1] << std::endl;
+    std::cout << "D: " << keys[2] << std::endl;
+    
     return keys;
 }
 

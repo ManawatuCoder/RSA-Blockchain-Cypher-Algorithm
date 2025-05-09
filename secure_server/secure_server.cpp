@@ -430,8 +430,8 @@ while (1) {  //main loop
       cpp_int pubKeyP1 = 12345;
       cpp_int pubKeyP2 = 69420;
 
-      std::vector<cpp_int> key2 = generate_rsa_key(257, 293);
-      std::vector<cpp_int> key = getCAkeys();
+      std::vector<cpp_int> key = generate_rsa_key(cpp_int("2722258935367507707706996859454145691647"), cpp_int("10384593717069655257060992658440191"));
+      std::vector<cpp_int> key2 = getCAkeys();
       if(key[0]==75301&&key[1]==3&&key[2]==49835) {
          std::cout << "Key is valid" << std::endl;
       } else {
