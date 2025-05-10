@@ -113,7 +113,7 @@ vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false) {
 
 // Pointless function to generate CA keys
 vector<cpp_int> getCAkeys(){
-    return generate_rsa_key(961749037, 961749157, true);
+    return generate_rsa_key(1, 1, true);
 }
 
 

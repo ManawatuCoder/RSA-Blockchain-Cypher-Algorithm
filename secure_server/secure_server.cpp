@@ -433,13 +433,10 @@ while (1) {  //main loop
       cpp_int pubKeyP1 = 12345;
       cpp_int pubKeyP2 = 69420;
 
-      std::vector<cpp_int> key = generate_rsa_key(cpp_int("9349179016167386125400483845309375997141"), cpp_int("4435879947760023601434372271947629916619"));
-      std::vector<cpp_int> key2 = getCAkeys();
-      if(key[0]==75301&&key[1]==3&&key[2]==49835) {
-         std::cout << "Key is valid" << std::endl;
-      } else {
-         std::cout << "Key is invalid" << std::endl;
-      }
+      //std::vector<cpp_int> key2 = generate_rsa_key(cpp_int("9349179016167386125400483845309375997141"), cpp_int("4435879947760023601434372271947629916619"));
+      std::vector<cpp_int> key = getCAkeys();
+
+
       dCA = key[2];
       modulus = key[0];
       //pubKey parts MUST BE < modulus!!
