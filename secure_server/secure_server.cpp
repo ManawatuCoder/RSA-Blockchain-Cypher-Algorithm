@@ -423,22 +423,25 @@ while (1) {  //main loop
 //********************************************************************      
       cpp_int temp[256];
       char temp2[256];
-      int dCA = 529;
-      int modulus = 75301;
+      // int dCA = 529;
+      // int modulus = 75301;
+      cpp_int dCA = 529;
+      cpp_int modulus = 75301;
       //int eCA = 24305; //For testing
 
       //*****************
       cpp_int pubKeyP1 = 12345;
       cpp_int pubKeyP2 = 69420;
 
-      std::vector<cpp_int> key = generate_rsa_key(cpp_int("2722258935367507707706996859454145691647"), cpp_int("10384593717069655257060992658440191"));
+      std::vector<cpp_int> key = generate_rsa_key(cpp_int("9349179016167386125400483845309375997141"), cpp_int("4435879947760023601434372271947629916619"));
       std::vector<cpp_int> key2 = getCAkeys();
       if(key[0]==75301&&key[1]==3&&key[2]==49835) {
          std::cout << "Key is valid" << std::endl;
       } else {
          std::cout << "Key is invalid" << std::endl;
       }
-
+      dCA = key[2];
+      modulus = key[0];
       //pubKey parts MUST BE < modulus!!
       //*****************
       size_t j;
@@ -494,7 +497,7 @@ while (1) {  //main loop
 //********************************************************************
 	  printf("\n--------------------------------------------\n");
 	  printf("the <<<SERVER>>> is waiting to receive messages.\n");
-      std::cout << "The thing i did: " << RSADecrypt(RSAEncrypt(255, 100000001, 924961325580311809), 790492195945179041, 924961325580311809) << std::endl;
+      std::cout << "The thing i did: " << RSADecrypt(RSAEncrypt(255, key[1], key[0]), key[2], key[0]) << std::endl;
       while (1) {
          n = 0;
 //********************************************************************

@@ -70,7 +70,7 @@ cpp_int RSADecrypt(cpp_int c, cpp_int d, cpp_int n){
 vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false) {
     cpp_int n = p * q;
     cpp_int z = (p - 1) * (q - 1);
-    cpp_int e = 2;
+    cpp_int e = 65537;
     cpp_int d = 0;
 
     if(CA) {

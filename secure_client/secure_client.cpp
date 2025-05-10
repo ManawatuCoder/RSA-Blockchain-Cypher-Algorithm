@@ -365,8 +365,12 @@ hints.ai_protocol = IPPROTO_TCP;
 	recv(s, (char*) (&len), sizeof(len), 0);
 	char* buffer= new char[len];
 
-	int modulus = 75301;
-    int eCA = 24305;
+	std::vector<cpp_int> key = generate_rsa_key(cpp_int("9349179016167386125400483845309375997141"), cpp_int("4435879947760023601434372271947629916619"));
+
+	// int modulus = 75301;
+    // int eCA = 24305;
+	cpp_int modulus = key[0];
+    cpp_int eCA = key[1];
 
 	bytes = recv(s, buffer, len, 0);
 
@@ -376,7 +380,9 @@ hints.ai_protocol = IPPROTO_TCP;
 		if(buffer[i] != ' '){
 			encryptedKey += buffer[i];
 		}else{
+			cout << "encryptedkey: "<< cpp_int(encryptedKey) << endl;
 			temp[j] = RSADecrypt(cpp_int(encryptedKey), eCA, modulus);
+			cout << "temp: "<< temp[j] << endl;
 			j++;
 			encryptedKey = "";
 		}
