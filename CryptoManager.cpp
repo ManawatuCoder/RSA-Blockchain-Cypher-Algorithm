@@ -194,3 +194,4 @@ vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false) {
 
     return keys;
 }
+}
