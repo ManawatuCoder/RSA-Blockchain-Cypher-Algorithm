@@ -400,14 +400,15 @@ hints.ai_protocol = IPPROTO_TCP;
 	cpp_int serverPubKey1(serverPubKeyString[0]);
 	cpp_int serverPubKey2(serverPubKeyString[1]);
 
-	send(s,"ACK 226 public key received",27,0);
+	const char* ack = "ACK 226 public key received";
+	send(s, ack, strlen(ack), 0);
 
 
 //*******************************************************************
 //Send e(nonce) rsaencrypted.
 //*******************************************************************
 
-	cpp_int NONCE = 1234; //Needs setting with a valid value.
+	cpp_int NONCE = 22327; //Needs setting with a valid value.
 
 	
 //*******************************************************************
@@ -423,16 +424,19 @@ hints.ai_protocol = IPPROTO_TCP;
 	}
 
 	std::string encrypto = "";
-	cpp_int privateKey; //Needs setting
-	encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),serverPubKey1.convert_to<int>(),serverPubKey2.convert_to<int>());
+	cpp_int privateKey = 3; //Needs setting
+	serverPubKey2 = 25777;
+	encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),privateKey.convert_to<int>(),serverPubKey2.convert_to<int>());
+
+	strncpy(send_buffer, encrypto.c_str(), encrypto.length()+1);
 	
 	std::string decrypto = "";
 	std::string character = "";
 
-	decrypto = deNonceify(encrypto.c_str(),NONCE.convert_to<int>(),privateKey,serverPubKey2);
+	decrypto = deNonceify(encrypto.c_str(),NONCE.convert_to<int>(),16971,25777);
 
 
-	cout << decrypto << endl;
+	cout << encrypto << endl;
     
 	//while ((strncmp(send_buffer,".",1) != 0) && (strncmp(send_buffer,"\n",1) != 0)) {
 	while ((strncmp(send_buffer,".",1) != 0)) {
@@ -502,7 +506,11 @@ hints.ai_protocol = IPPROTO_TCP;
 		     printf("error using fgets()\n");
 		     exit(1);
 	     }
-	     
+
+
+		// encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),privateKey.convert_to<int>(),serverPubKey2.convert_to<int>());
+		// strncpy(send_buffer, encrypto.c_str(), encrypto.length()+1);
+		// decrypto = deNonceify(encrypto.c_str(),NONCE.convert_to<int>(),16971,25777); 
 		
 	}
 	printf("\n--------------------------------------------\n");

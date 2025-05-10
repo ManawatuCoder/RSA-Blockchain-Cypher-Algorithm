@@ -474,14 +474,13 @@ while (1) {  //main loop
          // Send through key
          send(ns, encryptedStr.c_str(), lengthOfEncryptedData, 0);
 
-         bytes = recv(ns, &receive_buffer[n], 1, 0);
-         
-         if ((bytes < 0) || (bytes == 0)){
-            std::cout << "problems arose. ACK not received.";
-         }else{ //CHECK IF ACK RECEIVED IS ACTUALLY RECEIVED
-            //NOT IMPLEMENTED YET
-            std::cout << receive_buffer << std::endl;
-         }
+         memset(receive_buffer, 0, 256);
+         bytes = recv(ns, receive_buffer, 256, 0);
+         if (bytes > 0) {
+            receive_buffer[bytes] = '\0';
+            printf("ACK received: %s\n", receive_buffer);
+         }else{std::cout << "problems arose. ACK not received.";};
+
 
 		
 //********************************************************************		
@@ -489,7 +488,6 @@ while (1) {  //main loop
 //********************************************************************
 	  printf("\n--------------------------------------------\n");
 	  printf("the <<<SERVER>>> is waiting to receive messages.\n");
-      std::cout << "The thing i did: " << RSADecrypt(RSAEncrypt(255, 529, 75301), 24305, 75301) << std::endl;
       while (1) {
          n = 0;
 //********************************************************************
@@ -506,26 +504,22 @@ while (1) {  //main loop
             }
             if (receive_buffer[n] != '\r') n++; /*ignore CRs*/
          }
-			
+			printf("%s\n", receive_buffer);
+
+         cpp_int NONCE = 1234; //Needs setting with a valid value.
+         cpp_int privateKey = 16971;
+         cpp_int serverPubKey2 = 25777;
+         std::string decrypto = deNonceify(receive_buffer,NONCE.convert_to<int>(),privateKey,serverPubKey2);
+         strncpy(receive_buffer, decrypto.c_str(), decrypto.length()+1);
+         
          if ((bytes < 0) || (bytes == 0)) break;
+
          sprintf(send_buffer, "Message:'%s' - There are %d bytes of information\r\n", receive_buffer, n);
 
 //********************************************************************
 //PROCESS REQUEST
 //********************************************************************			
          printf("MSG RECEIVED <--: %s\n",receive_buffer);
-         
-         cpp_int temp[256];
-         char temp2[256];
-         size_t j;
-         for(j = 0; j < strlen(receive_buffer); j++){
-            temp[j] = RSAEncrypt(receive_buffer[j], 529, 75301);
-         }
-         std::cout << temp << std::endl;
-         for(size_t i = 0; i < j; i++){
-            temp2[i] = (char) RSADecrypt(temp[i], 24305, 75301);
-         }
-         std::cout << temp2 << std::endl;
          //printBuffer("RECEIVE_BUFFER", receive_buffer);
 			
 //********************************************************************
