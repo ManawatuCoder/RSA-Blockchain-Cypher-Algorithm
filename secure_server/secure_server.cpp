@@ -433,15 +433,12 @@ while (1) {  //main loop
       cpp_int pubKeyP1 = 12345;
       cpp_int pubKeyP2 = 69420;
 
-      std::vector<cpp_int> key = generate_rsa_key(cpp_int("9349179016167386125400483845309375997141"), cpp_int("4435879947760023601434372271947629916619"));
+      std::vector<cpp_int> key = generate_rsa_key(1,1,true);
+      std::vector<cpp_int> key2 = generate_rsa_key(cpp_int("63760236608357615581"), cpp_int("64772788767190457819"));
 
-      pubKeyP1 = key[1];
-      pubKeyP2 = key[0];
+      pubKeyP1 = key2[1];
+      pubKeyP2 = key2[0];
 
-      char tempString222[] = {'h','e','l','l','o',' ','w','o','r','l','d','\0'};
-      std::string tempstring333 = nonceify(tempString222, 22327, pubKeyP1, pubKeyP2).c_str();
-      std::cout << "Encrypted: " << tempstring333 << std::endl;
-      std::cout << deNonceify(tempstring333.c_str(), 22327,key[2],key[0]) << endl;
 
       
       //std::vector<cpp_int> key2 = getCAkeys();
@@ -528,7 +525,7 @@ while (1) {  //main loop
          cpp_int NONCE = 22327; //Needs setting with a valid value.
          cpp_int privateKey = 16971;
          cpp_int serverPubKey2 = 25777;
-         std::string decrypto = deNonceify(receive_buffer,NONCE.convert_to<int>(),key[2],key[0]);
+         std::string decrypto = deNonceify(receive_buffer,NONCE.convert_to<int>(),key2[2],key2[0]);
          strncpy(receive_buffer, decrypto.c_str(), decrypto.length()+1);
 
          if (receive_buffer[strlen(receive_buffer) - 1] == '\n') {

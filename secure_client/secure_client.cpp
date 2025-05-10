@@ -364,8 +364,8 @@ hints.ai_protocol = IPPROTO_TCP;
 	int len;
 	recv(s, (char*) (&len), sizeof(len), 0);
 
-	std::vector<cpp_int> key = generate_rsa_key(cpp_int("9349179016167386125400483845309375997141"), cpp_int("4435879947760023601434372271947629916619"));
-
+	std::vector<cpp_int> key = generate_rsa_key(1, 1, true);
+	
 	// int modulus = 75301;
     // int eCA = 24305;
 	cpp_int modulus = key[0];

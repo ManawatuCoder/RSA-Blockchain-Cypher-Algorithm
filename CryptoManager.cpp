@@ -111,18 +111,18 @@ std::string deNonceify(const char *input, cpp_int NONCE, cpp_int PRIV_KEY, cpp_i
 }
 
 vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA) {
+    cpp_int e = 65537;
+    if(CA) {
+        e = 65537;
+        p = cpp_int("9349179016167386125400483845309375997141");
+        q = cpp_int("4435879947760023601434372271947629916619");
+    }
     cpp_int n = p * q;
     cpp_int z = (p - 1) * (q - 1);
-    cpp_int e = 65537;
     cpp_int d = 0;
 
     cout << "Generating RSA keys..." << endl;
 
-    if(CA) {
-        e = 100000001;
-        p = cpp_int("9349179016167386125400483845309375997141");
-        q = cpp_int("4435879947760023601434372271947629916619");
-    } else {
         #define RAND_MAX n
         std::srand(std::time(0)); // Seed the random number generator
         // Find e such that 1 < e < z and gcd(e, z) = 1
@@ -134,7 +134,7 @@ vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA) {
                 e = std::rand() % (z - 1) + 1; // Randomly generate e
             }
         }
-        //}
+        
         }
 
 
@@ -154,5 +154,4 @@ vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA) {
     std::cout << "D: " << keys[2] << std::endl;
 
     return keys;
-}
 }
