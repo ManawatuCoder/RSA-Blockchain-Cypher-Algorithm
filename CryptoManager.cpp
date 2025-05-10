@@ -11,19 +11,9 @@ using namespace std;
 using namespace boost::multiprecision;
 
 cpp_int modinv(cpp_int e, cpp_int z);
-vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false)
+vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false);
 
 
-int somethingelse()
-{
-    cout << "Hello, World!" << endl;
-    return 0;
-}
-
-void testStuff(){
-    long p, q, e, d, n, z;
-    p = 257; q = 293; n = 75301; z = 24; e = 529; d = 24305;
-}
 
 
 long repeatSquare(long x, long e, long n) {
@@ -51,15 +41,16 @@ cpp_int RSADecrypt(cpp_int c, cpp_int d, cpp_int n){
 }
 
 
-std::string nonceify(const char *input, int NONCE, cpp_int PUB_KEY1, cpp_int PUB_KEY2){
+std::string nonceify(const char *input, cpp_int NONCE, cpp_int PUB_KEY1, cpp_int PUB_KEY2){
     std::string result = "";
-    int randNum = 0;
-    int length = strlen(input);
+    cpp_int randNum = 0;
+    cpp_int length = strlen(input);
 
     for (int i = 0; i < length; i++){
         randNum = input[i] ^ NONCE;
-        NONCE = RSAEncrypt(cpp_int(randNum), PUB_KEY1, PUB_KEY2).convert_to<int>();
-        result += std::to_string(NONCE) + " ";
+        NONCE = RSAEncrypt(cpp_int(randNum), PUB_KEY1, PUB_KEY2);
+        result += NONCE.str() + " ";
+        
     }
     return result;
 }
@@ -85,37 +76,6 @@ cpp_int euclidean_algo(cpp_int x, cpp_int y) {
     return y;
 }
 
-cpp_int extended_euclidean_algo(cpp_int e, cpp_int z) {
-    std::vector<cpp_int> x = std::vector<cpp_int>();
-    std::vector<cpp_int> y = std::vector<cpp_int>();
-    std::vector<cpp_int> w = std::vector<cpp_int>();
-    std::vector<cpp_int> k = std::vector<cpp_int>();
-    // initialize
-
-    x.emplace_back(1);
-    y.emplace_back(0);
-
-    x.emplace_back(0);
-    y.emplace_back(1);
-
-    w.emplace_back(z);
-    w.emplace_back(e);
-
-    k.emplace_back(0);
-
-    int i = 1;
-    while (w.back() != 1) {
-        k.emplace_back(w.at(i-1) / w.at(i));
-        i++;
-        x.emplace_back(x.at(i-2) - (k.at(i-1)*x.at(i-1)));
-        y.emplace_back(y.at(i-2) - (k.at(i-1)*y.at(i-1)));
-        w.emplace_back(w.at(i-2) - (k.at(i-1)*w.at(i-1)));
-    }
-    if (y.back() < 0) {
-        return y.back() + z;
-    }
-    return y.back();
-}
 
 // Just another name for the extended Euclidean algorithm
 cpp_int modinv(cpp_int e, cpp_int z) {
@@ -134,27 +94,26 @@ cpp_int modinv(cpp_int e, cpp_int z) {
     return (x < 0) ? x + z : x;
 }
 
-std::string deNonceify(const char *input, int NONCE, cpp_int PRIV_KEY, cpp_int PUB_KEY_N){
+std::string deNonceify(const char *input, cpp_int NONCE, cpp_int PRIV_KEY, cpp_int PUB_KEY_N){
     std::string result = "";
-    int decryptedVal = 0;
+    cpp_int decryptedVal = 0;
     std::istringstream iss(input);
     std::string token;
     
     while (iss >> token){
         cpp_int cipherVal(token);
-        decryptedVal = RSADecrypt(cipherVal, PRIV_KEY, PUB_KEY_N).convert_to<int>();
+        decryptedVal = RSADecrypt(cipherVal, PRIV_KEY, PUB_KEY_N);
         char originalChar = static_cast<char>(decryptedVal ^ NONCE);
-        NONCE = cipherVal.convert_to<int>();
+        NONCE = cipherVal;
         result += originalChar;
     }
     return result;
 }
 
-vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false) {
+vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA) {
     cpp_int n = p * q;
     cpp_int z = (p - 1) * (q - 1);
     cpp_int e = 65537;
-    cpp_int e = 2;
     cpp_int d = 0;
 
     cout << "Generating RSA keys..." << endl;

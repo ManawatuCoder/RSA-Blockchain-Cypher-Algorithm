@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
    SOCKET s;
 #endif
 
-#define BUFFER_SIZE 200 
+#define BUFFER_SIZE 40960 
 //remember that the BUFFESIZE has to be at least big enough to receive the answer from the server
 #define SEGMENT_SIZE 70
 //segment size, i.e., if fgets gets more than this number of bytes it segments the message
@@ -428,9 +428,10 @@ hints.ai_protocol = IPPROTO_TCP;
 	}
 
 	std::string encrypto = "";
-	cpp_int privateKey = 3; //Needs setting
-	serverPubKey2 = 25777;
-	encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),privateKey.convert_to<int>(),serverPubKey2.convert_to<int>());
+	// cpp_int privateKey = 3; //Needs setting
+	// serverPubKey2 = 25777;
+
+	encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),serverPubKey1,serverPubKey2);
 
 	strncpy(send_buffer, encrypto.c_str(), encrypto.length()+1);
 	
@@ -513,7 +514,7 @@ hints.ai_protocol = IPPROTO_TCP;
 	     }
 
 
-		encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),privateKey.convert_to<int>(),serverPubKey2.convert_to<int>());
+		encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),serverPubKey1,serverPubKey2);
 		strncpy(send_buffer, encrypto.c_str(), encrypto.length()+1);
 		decrypto = deNonceify(encrypto.c_str(),NONCE.convert_to<int>(),16971,25777); 
 		

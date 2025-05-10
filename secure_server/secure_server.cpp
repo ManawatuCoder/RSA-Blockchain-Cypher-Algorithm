@@ -55,8 +55,8 @@
 
 
 
-#define BUFFER_SIZE 500
-#define RBUFFER_SIZE 256
+#define BUFFER_SIZE 40960
+#define RBUFFER_SIZE 40960
 
 // using namespace std;
 
@@ -434,12 +434,17 @@ while (1) {  //main loop
       cpp_int pubKeyP2 = 69420;
 
       std::vector<cpp_int> key = generate_rsa_key(cpp_int("9349179016167386125400483845309375997141"), cpp_int("4435879947760023601434372271947629916619"));
-      std::vector<cpp_int> key2 = getCAkeys();
-      if(key[0]==75301&&key[1]==3&&key[2]==49835) {
-         std::cout << "Key is valid" << std::endl;
-      } else {
-         std::cout << "Key is invalid" << std::endl;
-      }
+
+      pubKeyP1 = key[1];
+      pubKeyP2 = key[0];
+
+      char tempString222[] = {'h','e','l','l','o',' ','w','o','r','l','d','\0'};
+      std::string tempstring333 = nonceify(tempString222, 22327, pubKeyP1, pubKeyP2).c_str();
+      std::cout << "Encrypted: " << tempstring333 << std::endl;
+      std::cout << deNonceify(tempstring333.c_str(), 22327,key[2],key[0]) << endl;
+
+      
+      //std::vector<cpp_int> key2 = getCAkeys();
       dCA = key[2];
       modulus = key[0];
       //pubKey parts MUST BE < modulus!!
@@ -502,7 +507,6 @@ while (1) {  //main loop
 //********************************************************************
 	  printf("\n--------------------------------------------\n");
 	  printf("the <<<SERVER>>> is waiting to receive messages.\n");
-      std::cout << "The thing i did: " << RSADecrypt(RSAEncrypt(255, 529, 75301), 24305, 75301) << std::endl;
       while (1) {
          n = 0;
 //********************************************************************
@@ -524,7 +528,7 @@ while (1) {  //main loop
          cpp_int NONCE = 22327; //Needs setting with a valid value.
          cpp_int privateKey = 16971;
          cpp_int serverPubKey2 = 25777;
-         std::string decrypto = deNonceify(receive_buffer,NONCE.convert_to<int>(),privateKey,serverPubKey2);
+         std::string decrypto = deNonceify(receive_buffer,NONCE.convert_to<int>(),key[2],key[0]);
          strncpy(receive_buffer, decrypto.c_str(), decrypto.length()+1);
 
          if (receive_buffer[strlen(receive_buffer) - 1] == '\n') {
