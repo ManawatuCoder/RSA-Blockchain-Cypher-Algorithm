@@ -441,6 +441,7 @@ hints.ai_protocol = IPPROTO_TCP;
 
 
 	cout << encrypto << endl;
+	cout << decrypto << endl;
     
 	//while ((strncmp(send_buffer,".",1) != 0) && (strncmp(send_buffer,"\n",1) != 0)) {
 	while ((strncmp(send_buffer,".",1) != 0)) {
@@ -512,9 +513,9 @@ hints.ai_protocol = IPPROTO_TCP;
 	     }
 
 
-		// encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),privateKey.convert_to<int>(),serverPubKey2.convert_to<int>());
-		// strncpy(send_buffer, encrypto.c_str(), encrypto.length()+1);
-		// decrypto = deNonceify(encrypto.c_str(),NONCE.convert_to<int>(),16971,25777); 
+		encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),privateKey.convert_to<int>(),serverPubKey2.convert_to<int>());
+		strncpy(send_buffer, encrypto.c_str(), encrypto.length()+1);
+		decrypto = deNonceify(encrypto.c_str(),NONCE.convert_to<int>(),16971,25777); 
 		
 	}
 	printf("\n--------------------------------------------\n");

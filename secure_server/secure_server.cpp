@@ -521,11 +521,15 @@ while (1) {  //main loop
          }
 			printf("%s\n", receive_buffer);
 
-         cpp_int NONCE = 1234; //Needs setting with a valid value.
+         cpp_int NONCE = 22327; //Needs setting with a valid value.
          cpp_int privateKey = 16971;
          cpp_int serverPubKey2 = 25777;
          std::string decrypto = deNonceify(receive_buffer,NONCE.convert_to<int>(),privateKey,serverPubKey2);
          strncpy(receive_buffer, decrypto.c_str(), decrypto.length()+1);
+
+         if (receive_buffer[strlen(receive_buffer) - 1] == '\n') {
+         receive_buffer[strlen(receive_buffer) - 1] = '\0';
+}
          
          if ((bytes < 0) || (bytes == 0)) break;
 
