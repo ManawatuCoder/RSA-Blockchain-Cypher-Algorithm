@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <cmath>
+#include <random>
 #include <boost/algorithm/string.hpp>
 #include <boost/multiprecision/cpp_int.hpp>
 #include <boost/multiprecision/number.hpp>
@@ -71,20 +72,24 @@ cpp_int RSADecrypt(cpp_int c, cpp_int d, cpp_int n){
 vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false) {
     cpp_int n = p * q;
     cpp_int z = (p - 1) * (q - 1);
-    cpp_int e = 65537;
+    cpp_int e = 2;
     cpp_int d = 0;
+
+    cout << "Generating RSA keys..." << endl;
 
     if(CA) {
         e = 100000001;
-        p = 961749037;
-        q = 961749157;
+        p = cpp_int("9349179016167386125400483845309375997141");
+        q = cpp_int("4435879947760023601434372271947629916619");
     } else {
+        #define RAND_MAX n
+        std::srand(std::time(0)); // Seed the random number generator
         // Find e such that 1 < e < z and gcd(e, z) = 1
-        for (; e < z; e++) {
-            if (gcd(e, z) == 1) {
-                break;
+        //for (; e < z; e++) {
+            while (gcd(e, z) != 1) {
+                e = std::rand() % (z - 1) + 1; // Randomly generate e
             }
-        }
+        //}
     }
 
 
