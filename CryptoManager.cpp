@@ -62,6 +62,75 @@ std::string nonceify(const char *input, int NONCE, cpp_int PUB_KEY1, cpp_int PUB
     return result;
 }
 
+// Pointless function to generate CA keys
+vector<cpp_int> getCAkeys(){
+    return generate_rsa_key(961749037, 961749157, true);
+}
+
+
+cpp_int euclidean_algo(cpp_int x, cpp_int y) {
+    cpp_int remainder = 0;
+
+    while (true) {
+        remainder = x % y;
+        if (remainder == 0) {
+            break;
+        }
+        x = y;
+        y = remainder;
+    }
+
+    return y;
+}
+
+cpp_int extended_euclidean_algo(cpp_int e, cpp_int z) {
+    std::vector<cpp_int> x = std::vector<cpp_int>();
+    std::vector<cpp_int> y = std::vector<cpp_int>();
+    std::vector<cpp_int> w = std::vector<cpp_int>();
+    std::vector<cpp_int> k = std::vector<cpp_int>();
+    // initialize
+
+    x.emplace_back(1);
+    y.emplace_back(0);
+
+    x.emplace_back(0);
+    y.emplace_back(1);
+
+    w.emplace_back(z);
+    w.emplace_back(e);
+
+    k.emplace_back(0);
+
+    int i = 1;
+    while (w.back() != 1) {
+        k.emplace_back(w.at(i-1) / w.at(i));
+        i++;
+        x.emplace_back(x.at(i-2) - (k.at(i-1)*x.at(i-1)));
+        y.emplace_back(y.at(i-2) - (k.at(i-1)*y.at(i-1)));
+        w.emplace_back(w.at(i-2) - (k.at(i-1)*w.at(i-1)));
+    }
+    if (y.back() < 0) {
+        return y.back() + z;
+    }
+    return y.back();
+}
+
+// Just another name for the extended Euclidean algorithm
+cpp_int modinv(cpp_int e, cpp_int z) {
+    cpp_int a = z, b = e, x = 0, y = 1;
+
+    while (b != 0) {
+        cpp_int q = a / b, r = a % b;
+        a = b; b = r;
+        cpp_int tmp = x;
+        x = y;
+        y = tmp - q * y;
+    }
+
+    if (a != 1) throw std::invalid_argument("No modular inverse exists");
+
+    return (x < 0) ? x + z : x;
+}
 
 std::string deNonceify(const char *input, int NONCE, cpp_int PRIV_KEY, cpp_int PUB_KEY_N){
     std::string result = "";
@@ -79,3 +148,49 @@ std::string deNonceify(const char *input, int NONCE, cpp_int PRIV_KEY, cpp_int P
     return result;
 }
 
+vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false) {
+    cpp_int n = p * q;
+    cpp_int z = (p - 1) * (q - 1);
+    cpp_int e = 65537;
+    cpp_int e = 2;
+    cpp_int d = 0;
+
+    cout << "Generating RSA keys..." << endl;
+
+    if(CA) {
+        e = 100000001;
+        p = cpp_int("9349179016167386125400483845309375997141");
+        q = cpp_int("4435879947760023601434372271947629916619");
+    } else {
+        #define RAND_MAX n
+        std::srand(std::time(0)); // Seed the random number generator
+        // Find e such that 1 < e < z and gcd(e, z) = 1
+        for (; e < z; e++) {
+            if (gcd(e, z) == 1) {
+                break;
+        //for (; e < z; e++) {
+            while (gcd(e, z) != 1) {
+                e = std::rand() % (z - 1) + 1; // Randomly generate e
+            }
+        }
+        //}
+        }
+
+
+    // Find d
+    // Extended Euclidean Algorithm to find d
+    d = modinv(e, z);
+
+    vector<cpp_int> keys;
+    keys.push_back(n);
+    keys.push_back(e);
+    keys.push_back(d);
+
+    // Print the keys
+
+    std::cout << "N: " << keys[0] << std::endl;
+    std::cout << "E: " << keys[1] << std::endl;
+    std::cout << "D: " << keys[2] << std::endl;
+
+    return keys;
+}
