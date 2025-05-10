@@ -496,8 +496,35 @@ while (1) {  //main loop
             receive_buffer[bytes] = '\0';
             printf("ACK received: %s\n", receive_buffer);
          }else{std::cout << "problems arose. ACK not received.";};
+//********************************************************************		
+//Recieve the encrypted nonce
+//********************************************************************
+int len;
+recv(ns, (char*) (&len), sizeof(len), 0);
 
+char * temp32 = new char[len];
 
+bytes = recv(ns, temp32, len, 0);
+cout << "Bytes received: " << bytes << endl;
+std::string tempString2;
+for(i = 0; i < len; i++){
+   tempString2 += temp32[i];
+}
+
+string tempString3;
+string decrypted;
+for(i = 0; i < tempString2.length(); i++){
+   if(tempString2[i] != ' '){
+      tempString3 += tempString2[i];
+   } else {
+      decrypted += (char) RSADecrypt(cpp_int(tempString3), key2[2], key2[0]).convert_to<int>();
+      cout << "Decrypted: " << RSADecrypt(cpp_int(tempString3), key2[2], key2[0]).str() << endl;
+      tempString3 = "";
+   }
+}
+
+cpp_int NONCE = cpp_int(decrypted);
+cout << "Decrypted NONCE: " << decrypted << endl;
 		
 //********************************************************************		
 //Communicate with the Client
@@ -522,7 +549,7 @@ while (1) {  //main loop
          }
 			printf("%s\n", receive_buffer);
 
-         cpp_int NONCE = 22327; //Needs setting with a valid value.
+         
          cpp_int privateKey = 16971;
          cpp_int serverPubKey2 = 25777;
          std::string decrypto = deNonceify(receive_buffer,NONCE.convert_to<int>(),key2[2],key2[0]);

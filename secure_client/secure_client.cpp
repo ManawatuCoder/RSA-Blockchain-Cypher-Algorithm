@@ -411,10 +411,32 @@ hints.ai_protocol = IPPROTO_TCP;
 //*******************************************************************
 //Send e(nonce) rsaencrypted.
 //*******************************************************************
-
+	int m;
+	cpp_int temp2[256];
 	cpp_int NONCE = 22327; //Needs setting with a valid value.
+	string NONCEstring = NONCE.str();
+	const char *sendKey = NONCEstring.c_str();
+	for (m = 0; m < NONCEstring.length(); m++){
+        //Encrypt char by char
+        temp2[m] = RSAEncrypt(sendKey[m], serverPubKey1, serverPubKey2);
+    }
 
-	
+	std::string encryptedStr;
+    for(int i = 0; i < m; i++){
+        encryptedStr += temp2[i].str() + " ";
+        }
+		cout << "Encrypted NONCE: " << encryptedStr << endl;
+int lengthOfEncryptedData = encryptedStr.length();
+         // std::cout << lengthOfEncryptedData;
+         send(s, (char *) &lengthOfEncryptedData, sizeof(lengthOfEncryptedData), 0);
+
+         // Send through nonce
+         send(s, encryptedStr.c_str(), lengthOfEncryptedData, 0);
+
+	//send(s, (char*) (sizeof(NONCE)), sizeof(int), 0);
+	//send(s, NONCEstring.c_str(), sizeof(NONCE), 0);
+
+
 //*******************************************************************
 //Get input while user don't type "."
 //*******************************************************************
