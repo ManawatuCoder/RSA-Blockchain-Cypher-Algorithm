@@ -363,7 +363,6 @@ hints.ai_protocol = IPPROTO_TCP;
 	cpp_int temp[256];
 	int len;
 	recv(s, (char*) (&len), sizeof(len), 0);
-	char* buffer= new char[len];
 
 	std::vector<cpp_int> key = generate_rsa_key(cpp_int("9349179016167386125400483845309375997141"), cpp_int("4435879947760023601434372271947629916619"));
 
@@ -372,28 +371,49 @@ hints.ai_protocol = IPPROTO_TCP;
 	cpp_int modulus = key[0];
     cpp_int eCA = key[1];
 
+	std::string serverPubKeyString[2]={""};
+	
+	char* buffer= new char[len];
 	bytes = recv(s, buffer, len, 0);
 
 	std::string encryptedKey;
 	int j = 0;
+	bool first = true;
 	for(int i = 0; i < len; i++){
+		if(buffer[i] == ','){
+			first = false;
+			continue;
+		}
 		if(buffer[i] != ' '){
 			encryptedKey += buffer[i];
 		}else{
-			cout << "encryptedkey: "<< cpp_int(encryptedKey) << endl;
-			temp[j] = RSADecrypt(cpp_int(encryptedKey), eCA, modulus);
-			cout << "temp: "<< temp[j] << endl;
-			j++;
+			cpp_int decrypted = RSADecrypt(cpp_int(encryptedKey), eCA, modulus);
 			encryptedKey = "";
+
+			if(first){
+				serverPubKeyString[0] += decrypted.convert_to<int>();
+			}else{
+				serverPubKeyString[1] += decrypted.convert_to<int>();
+			}
+
+			j++;
 		}
 	}
+	
+	std::cout << "Servers public key is:  " << serverPubKeyString[0] << "," << serverPubKeyString[1] << endl;
+	cpp_int serverPubKey1(serverPubKeyString[0]);
+	cpp_int serverPubKey2(serverPubKeyString[1]);
 
-	std::string serverPubKeyString = "";
-	for(int i = 0; i < j; i++){
-		serverPubKeyString += temp[i].convert_to<int>();
-	}
-	cout << "Servers public key is:  " << serverPubKeyString << endl;
-	cpp_int serverPubKey(serverPubKeyString);
+	const char* ack = "ACK 226 public key received";
+	send(s, ack, strlen(ack), 0);
+
+
+//*******************************************************************
+//Send e(nonce) rsaencrypted.
+//*******************************************************************
+
+	cpp_int NONCE = 22327; //Needs setting with a valid value.
+
 	
 //*******************************************************************
 //Get input while user don't type "."
@@ -406,6 +426,21 @@ hints.ai_protocol = IPPROTO_TCP;
 		printf("error using fgets()\n");
 		exit(1);
 	}
+
+	std::string encrypto = "";
+	cpp_int privateKey = 3; //Needs setting
+	serverPubKey2 = 25777;
+	encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),privateKey.convert_to<int>(),serverPubKey2.convert_to<int>());
+
+	strncpy(send_buffer, encrypto.c_str(), encrypto.length()+1);
+	
+	std::string decrypto = "";
+	std::string character = "";
+
+	decrypto = deNonceify(encrypto.c_str(),NONCE.convert_to<int>(),16971,25777);
+
+
+	cout << encrypto << endl;
     
 	//while ((strncmp(send_buffer,".",1) != 0) && (strncmp(send_buffer,"\n",1) != 0)) {
 	while ((strncmp(send_buffer,".",1) != 0)) {
@@ -475,7 +510,11 @@ hints.ai_protocol = IPPROTO_TCP;
 		     printf("error using fgets()\n");
 		     exit(1);
 	     }
-	     
+
+
+		// encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),privateKey.convert_to<int>(),serverPubKey2.convert_to<int>());
+		// strncpy(send_buffer, encrypto.c_str(), encrypto.length()+1);
+		// decrypto = deNonceify(encrypto.c_str(),NONCE.convert_to<int>(),16971,25777); 
 		
 	}
 	printf("\n--------------------------------------------\n");

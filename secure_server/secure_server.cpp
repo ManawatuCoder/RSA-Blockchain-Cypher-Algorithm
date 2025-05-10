@@ -432,69 +432,67 @@ while (1) {  //main loop
       //*****************
       cpp_int pubKeyP1 = 12345;
       cpp_int pubKeyP2 = 69420;
-
-      //std::vector<cpp_int> key2 = generate_rsa_key(cpp_int("9349179016167386125400483845309375997141"), cpp_int("4435879947760023601434372271947629916619"));
-      std::vector<cpp_int> key = getCAkeys();
-
-
-      dCA = key[2];
-      modulus = key[0];
       //pubKey parts MUST BE < modulus!!
       //*****************
       size_t j;
+      size_t i;
+      std::string tempString;
+      const char *sendKey;
+         
+         tempString = pubKeyP1.str();
+         sendKey = tempString.c_str();
 
-      std::string tempString = pubKeyP1.str();
-      const char *sendKey1 = tempString.c_str();
+         for(j = 0; j < tempString.length(); j++){
+            //Encrypt char by char
+            temp[j] = RSAEncrypt(sendKey[j], dCA, modulus);
+            //std::cout << temp[j];
+         }
 
-      for(j = 0; j < tempString.length(); j++){
-         //Encrypt char by char
-         temp[j] = RSAEncrypt(sendKey1[j], dCA, modulus);
-         std::cout << temp[j];
-      }
+         std::string encryptedStr;
 
-      std::string encryptedStr;
+         for(i = 0; i < j; i++){
+            encryptedStr += temp[i].str() + " ";
+            // For Testing Purposes
+            // temp2[i] = (char) RSADecrypt(temp[i], eCA, modulus);
+            // std::cout << temp2[i];
+         }
+         encryptedStr += ",";
 
-      std::cout << std::endl;
-      for(size_t i = 0; i < j; i++){
-         encryptedStr += temp[i].str() + " ";
-         // For Testing Purposes
-         // temp2[i] = (char) RSADecrypt(temp[i], eCA, modulus);
-         // std::cout << temp2[i];
-      }
+         tempString = pubKeyP2.str();
+         sendKey = tempString.c_str();
+         int priorlength = j;
 
-      //Send through length of key
-      int lengthOfEncryptedData = encryptedStr.length();
-      std::cout << lengthOfEncryptedData;
-      send(ns, (char *) &lengthOfEncryptedData, sizeof(lengthOfEncryptedData), 0);
+         for(j; j < priorlength + tempString.length(); j++){
+            temp[j] = RSAEncrypt(sendKey[j - priorlength], dCA, modulus);
+            //std::cout << temp[j];
+         }
+         for(i; i < j; i++){
+            encryptedStr += temp[i].str() + " ";
+         }
 
-      // Send through key
-      send(ns, encryptedStr.c_str(), lengthOfEncryptedData, 0);
+         //Send through length of key
+         int lengthOfEncryptedData = encryptedStr.length();
+         // std::cout << lengthOfEncryptedData;
+         send(ns, (char *) &lengthOfEncryptedData, sizeof(lengthOfEncryptedData), 0);
+
+         // Send through key
+         send(ns, encryptedStr.c_str(), lengthOfEncryptedData, 0);
+
+         memset(receive_buffer, 0, 256);
+         bytes = recv(ns, receive_buffer, 256, 0);
+         if (bytes > 0) {
+            receive_buffer[bytes] = '\0';
+            printf("ACK received: %s\n", receive_buffer);
+         }else{std::cout << "problems arose. ACK not received.";};
 
 
-      // temp = RSAEncrypt(pubKeyP1, dCA, modulus);
-      // //Modify below prints for assignment specs
-      // std::cout << temp << std::endl;
-
-      // for(size_t i = 0; i < j; i++){
-      //    temp2 = RSADecrypt(temp, eCA, modulus);
-      // }
-      // std::cout << temp2 << std::endl;
-
-      // temp = RSAEncrypt(pubKeyP2, dCA, modulus);
-      // //Modify below prints for assignment specs
-      // std::cout << temp << std::endl;
-
-      // for(size_t i = 0; i < j; i++){
-      //    temp2 = RSADecrypt(temp, eCA, modulus);
-      // }
-      // std::cout << temp2 << std::endl;
 		
 //********************************************************************		
 //Communicate with the Client
 //********************************************************************
 	  printf("\n--------------------------------------------\n");
 	  printf("the <<<SERVER>>> is waiting to receive messages.\n");
-      std::cout << "The thing i did: " << RSADecrypt(RSAEncrypt(255, key[1], key[0]), key[2], key[0]) << std::endl;
+      std::cout << "The thing i did: " << RSADecrypt(RSAEncrypt(255, 529, 75301), 24305, 75301) << std::endl;
       while (1) {
          n = 0;
 //********************************************************************
@@ -511,26 +509,22 @@ while (1) {  //main loop
             }
             if (receive_buffer[n] != '\r') n++; /*ignore CRs*/
          }
-			
+			printf("%s\n", receive_buffer);
+
+         cpp_int NONCE = 1234; //Needs setting with a valid value.
+         cpp_int privateKey = 16971;
+         cpp_int serverPubKey2 = 25777;
+         std::string decrypto = deNonceify(receive_buffer,NONCE.convert_to<int>(),privateKey,serverPubKey2);
+         strncpy(receive_buffer, decrypto.c_str(), decrypto.length()+1);
+         
          if ((bytes < 0) || (bytes == 0)) break;
+
          sprintf(send_buffer, "Message:'%s' - There are %d bytes of information\r\n", receive_buffer, n);
 
 //********************************************************************
 //PROCESS REQUEST
 //********************************************************************			
          printf("MSG RECEIVED <--: %s\n",receive_buffer);
-         
-         cpp_int temp[256];
-         char temp2[256];
-         size_t j;
-         for(j = 0; j < strlen(receive_buffer); j++){
-            temp[j] = RSAEncrypt(receive_buffer[j], 529, 75301);
-         }
-         std::cout << temp << std::endl;
-         for(size_t i = 0; i < j; i++){
-            temp2[i] = (char) RSADecrypt(temp[i], 24305, 75301);
-         }
-         std::cout << temp2 << std::endl;
          //printBuffer("RECEIVE_BUFFER", receive_buffer);
 			
 //********************************************************************
