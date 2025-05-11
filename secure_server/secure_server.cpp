@@ -422,12 +422,6 @@ while (1) {  //main loop
 //Encrypt public key, and send to the Client
 //********************************************************************      
       cpp_int temp[256];
-      //char temp2[256];
-      // int dCA = 529;
-      // int modulus = 75301;
-      cpp_int dCA = 529;
-      cpp_int modulus = 7530000;
-      //int eCA = 24305; //For testing
 
       //*****************
       setSeed(); // Prime rng with new key.
@@ -440,6 +434,7 @@ while (1) {  //main loop
       cout << pubKeyP1 << endl << pubKeyP2 << endl;
       //cpp_int("64772788767190457819")
       //cpp_int("63760236608357615581")
+      //Initial testing values, prior to generation algorithm.
       std::vector<cpp_int> key = generate_rsa_key(1,1,true);
       std::vector<cpp_int> key2 = generate_rsa_key(pubKeyP1, pubKeyP2);
 
@@ -451,8 +446,8 @@ while (1) {  //main loop
 
       
       //std::vector<cpp_int> key2 = getCAkeys();
-      dCA = key[2];
-      modulus = key[0];
+      cpp_int dCA = key[2];
+      cpp_int modulus = key[0];
       //pubKey parts MUST BE < modulus!!
       //*****************
       size_t j;
@@ -466,16 +461,12 @@ while (1) {  //main loop
          for(j = 0; j < tempString.length(); j++){
             //Encrypt char by char
             temp[j] = RSAEncrypt(sendKey[j], dCA, modulus);
-            //std::cout << temp[j];
          }
 
          std::string encryptedStr;
 
          for(i = 0; i < j; i++){
             encryptedStr += temp[i].str() + " ";
-            // For Testing Purposes
-            // temp2[i] = (char) RSADecrypt(temp[i], eCA, modulus);
-            // std::cout << temp2[i];
          }
          encryptedStr += ",";
 
@@ -485,7 +476,6 @@ while (1) {  //main loop
 
          for(; j < priorlength + tempString.length(); j++){
             temp[j] = RSAEncrypt(sendKey[j - priorlength], dCA, modulus);
-            //std::cout << temp[j];
          }
          for(; i < j; i++){
             encryptedStr += temp[i].str() + " ";
@@ -495,7 +485,6 @@ while (1) {  //main loop
 
          //Send through length of key
          int lengthOfEncryptedData = encryptedStr.length();
-         // std::cout << lengthOfEncryptedData;
          send(ns, (char *) &lengthOfEncryptedData, sizeof(lengthOfEncryptedData), 0);
 
          // Send through key
@@ -512,7 +501,6 @@ while (1) {  //main loop
 //********************************************************************		
 //Recieve the encrypted nonce
 //********************************************************************
-         //int len;
          size_t len;
          recv(ns, (char*) (&len), sizeof(len), 0);
 
