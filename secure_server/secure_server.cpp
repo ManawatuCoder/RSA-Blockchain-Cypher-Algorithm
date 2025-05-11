@@ -422,11 +422,11 @@ while (1) {  //main loop
 //Encrypt public key, and send to the Client
 //********************************************************************      
       cpp_int temp[256];
-      char temp2[256];
+      //char temp2[256];
       // int dCA = 529;
       // int modulus = 75301;
       cpp_int dCA = 529;
-      cpp_int modulus = 75301;
+      cpp_int modulus = 7530000;
       //int eCA = 24305; //For testing
 
       //*****************
@@ -483,11 +483,11 @@ while (1) {  //main loop
          sendKey = tempString.c_str();
          int priorlength = j;
 
-         for(j; j < priorlength + tempString.length(); j++){
+         for(; j < priorlength + tempString.length(); j++){
             temp[j] = RSAEncrypt(sendKey[j - priorlength], dCA, modulus);
             //std::cout << temp[j];
          }
-         for(i; i < j; i++){
+         for(; i < j; i++){
             encryptedStr += temp[i].str() + " ";
          }
 
@@ -512,7 +512,8 @@ while (1) {  //main loop
 //********************************************************************		
 //Recieve the encrypted nonce
 //********************************************************************
-         int len;
+         //int len;
+         size_t len;
          recv(ns, (char*) (&len), sizeof(len), 0);
 
          char * temp32 = new char[len];

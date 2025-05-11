@@ -365,7 +365,6 @@ hints.ai_protocol = IPPROTO_TCP;
 	recv(s, (char*) (&len), sizeof(len), 0);
 
 	std::vector<cpp_int> key = generate_rsa_key(1, 1, true);
-	
 	// int modulus = 75301;
     // int eCA = 24305;
 	cpp_int modulus = key[0];
@@ -414,7 +413,7 @@ hints.ai_protocol = IPPROTO_TCP;
 //*******************************************************************
 //Send e(nonce) rsaencrypted.
 //*******************************************************************
-	int m;
+	size_t m;
 	cpp_int temp2[256];
 	cpp_int NONCE = getNonce(); //Needs setting with a valid value.
 	string NONCEstring = NONCE.str();
@@ -425,7 +424,7 @@ hints.ai_protocol = IPPROTO_TCP;
     }
 
 	std::string encryptedStr;
-    for(int i = 0; i < m; i++){
+    for(size_t i = 0; i < m; i++){
         encryptedStr += temp2[i].str() + " ";
         }
 		cout << "NONCE: " << NONCE << endl;
