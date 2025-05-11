@@ -532,7 +532,6 @@ while (1) {  //main loop
             if(tempString2[i] != ' '){
                tempString3 += tempString2[i];
             } else {
-               cout << tempString3 << endl;
                decrypted += (char) RSADecrypt(cpp_int(tempString3), key2[2], key2[0]).convert_to<int>();
                tempString3 = "";
             }
