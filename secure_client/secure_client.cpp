@@ -28,7 +28,7 @@
   #include <netdb.h> //used by getnameinfo()
   #include <iostream>
   #include <string>
-  #include "../CryptoManager.h"
+  #include "../EncryptionManager.h"
 
   #include <boost/multiprecision/cpp_int.hpp>   
   #include <boost/multiprecision/cpp_dec_float.hpp> 
@@ -43,7 +43,7 @@
   #include <stdio.h>
   #include <iostream>
   #include <string>
-  #include "../cryptomanager.h"
+  #include "../EncryptionManager.h"
 
 
   #include <boost/multiprecision/cpp_int.hpp>   
