@@ -16,5 +16,6 @@ vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false);
 vector<cpp_int> getCAkeys();
 std::string nonceify(const char *input, cpp_int NONCE, cpp_int PUB_KEY1, cpp_int PUB_KEY2);
 std::string deNonceify(const char *input, cpp_int NONCE, cpp_int PRIV_KEY, cpp_int PUB_KEY_N);
+cpp_int getPrime();
 
 #endif // SOMETHINGELSE_H

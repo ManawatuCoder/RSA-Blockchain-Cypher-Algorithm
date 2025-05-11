@@ -430,11 +430,11 @@ while (1) {  //main loop
       //int eCA = 24305; //For testing
 
       //*****************
-      cpp_int pubKeyP1 = 12345;
-      cpp_int pubKeyP2 = 69420;
+      cpp_int pubKeyP1 = getPrime();//Random prime for now, to generate key.
+      cpp_int pubKeyP2 = getPrime();//Random prime for now, to generate key.
 
       std::vector<cpp_int> key = generate_rsa_key(1,1,true);
-      std::vector<cpp_int> key2 = generate_rsa_key(cpp_int("63760236608357615581"), cpp_int("64772788767190457819"));
+      std::vector<cpp_int> key2 = generate_rsa_key(pubKeyP1, pubKeyP2);
 
       pubKeyP1 = key2[1];
       pubKeyP2 = key2[0];
@@ -496,6 +496,8 @@ while (1) {  //main loop
             receive_buffer[bytes] = '\0';
             printf("ACK received: %s\n", receive_buffer);
          }else{std::cout << "problems arose. ACK not received.";};
+
+
 //********************************************************************		
 //Recieve the encrypted nonce
 //********************************************************************

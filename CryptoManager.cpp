@@ -14,7 +14,24 @@ cpp_int modinv(cpp_int e, cpp_int z);
 vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA = false);
 
 
+vector<cpp_int> primes = {//Ten randomly chosen 64 bit primes
+                          {cpp_int("70702638975200929201")}
+                         ,{cpp_int("78072455446014560417")}
+                         ,{cpp_int("27707897492187594523")}
+                         ,{cpp_int("38821223249753292281")}
+                         ,{cpp_int("64601745730836467567")}
+                         ,{cpp_int("46376292498544761223")}
+                         ,{cpp_int("66431013154534135909")}
+                         ,{cpp_int("14148293135714142569")}
+                         ,{cpp_int("50814365558520322817")}
+                         ,{cpp_int("59577149443889344843")}
+                        };
 
+
+cpp_int getPrime(){
+    int randPrime = rand() % 9;
+    return primes.at(randPrime);
+}
 
 long repeatSquare(long x, long e, long n) {
     int y=1;//initialize y to 1, very important
@@ -114,8 +131,8 @@ vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA) {
     cpp_int e = 65537;
     if(CA) {
         e = 65537;
-        p = cpp_int("9349179016167386125400483845309375997141");
-        q = cpp_int("4435879947760023601434372271947629916619");
+        p = cpp_int("9349179016167386125400483845309375997141");//Static value for CA only
+        q = cpp_int("4435879947760023601434372271947629916619");//Static value for CA only
     }
     cpp_int n = p * q;
     cpp_int z = (p - 1) * (q - 1);
