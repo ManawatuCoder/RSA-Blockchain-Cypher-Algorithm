@@ -413,7 +413,7 @@ hints.ai_protocol = IPPROTO_TCP;
 //*******************************************************************
 	int m;
 	cpp_int temp2[256];
-	cpp_int NONCE = 22327; //Needs setting with a valid value.
+	cpp_int NONCE = getNonce(); //Needs setting with a valid value.
 	string NONCEstring = NONCE.str();
 	const char *sendKey = NONCEstring.c_str();
 	for (m = 0; m < NONCEstring.length(); m++){
