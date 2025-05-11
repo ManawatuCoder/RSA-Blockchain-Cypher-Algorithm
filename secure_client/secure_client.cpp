@@ -399,13 +399,16 @@ hints.ai_protocol = IPPROTO_TCP;
 			j++;
 		}
 	}
+
+	std::cout << "Received certificate from the secure server :" << endl << buffer << endl << endl;
 	
-	std::cout << "Servers public key is:  " << serverPubKeyString[0] << "," << serverPubKeyString[1] << endl;
+	std::cout << "Servers decrypted certificate is:  " << serverPubKeyString[0] << "," << serverPubKeyString[1] << endl << endl;
 	cpp_int serverPubKey1(serverPubKeyString[0]);
 	cpp_int serverPubKey2(serverPubKeyString[1]);
 
 	const char* ack = "ACK 226 public key received";
 	send(s, ack, strlen(ack), 0);
+	cout << "Ack transmitted: " << ack << endl << endl;
 
 
 //*******************************************************************
@@ -425,6 +428,7 @@ hints.ai_protocol = IPPROTO_TCP;
     for(int i = 0; i < m; i++){
         encryptedStr += temp2[i].str() + " ";
         }
+		cout << "NONCE: " << NONCE << endl;
 		cout << "Encrypted NONCE: " << encryptedStr << endl;
 int lengthOfEncryptedData = encryptedStr.length();
          // std::cout << lengthOfEncryptedData;
@@ -449,22 +453,12 @@ int lengthOfEncryptedData = encryptedStr.length();
 		exit(1);
 	}
 
-	std::string encrypto = "";
-	// cpp_int privateKey = 3; //Needs setting
-	// serverPubKey2 = 25777;
+	cout << "Plaintext message: " << send_buffer << endl;
 
+	std::string encrypto = "";
 	encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),serverPubKey1,serverPubKey2);
 
 	strncpy(send_buffer, encrypto.c_str(), encrypto.length()+1);
-	
-	std::string decrypto = "";
-	std::string character = "";
-
-	decrypto = deNonceify(encrypto.c_str(),NONCE.convert_to<int>(),16971,25777);
-
-
-	cout << encrypto << endl;
-	cout << decrypto << endl;
     
 	//while ((strncmp(send_buffer,".",1) != 0) && (strncmp(send_buffer,"\n",1) != 0)) {
 	while ((strncmp(send_buffer,".",1) != 0)) {
@@ -538,8 +532,6 @@ int lengthOfEncryptedData = encryptedStr.length();
 
 		encrypto = nonceify(send_buffer,NONCE.convert_to<int>(),serverPubKey1,serverPubKey2);
 		strncpy(send_buffer, encrypto.c_str(), encrypto.length()+1);
-		decrypto = deNonceify(encrypto.c_str(),NONCE.convert_to<int>(),16971,25777); 
-		
 	}
 	printf("\n--------------------------------------------\n");
 	printf("<<<CLIENT>>> is shutting down...\n");
