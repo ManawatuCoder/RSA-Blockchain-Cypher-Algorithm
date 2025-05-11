@@ -153,7 +153,6 @@ vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA) {
     cpp_int z = (p - 1) * (q - 1);
     cpp_int d = 0;
 
-        #define RAND_MAX n
         std::srand(std::time(0)); // Seed the random number generator
         // Find e such that 1 < e < z and gcd(e, z) = 1
 
@@ -161,7 +160,7 @@ vector<cpp_int> generate_rsa_key(cpp_int p, cpp_int q, bool CA) {
 
         //for (; e < z; e++) {
             while (gcd(e, z) != 1) {
-                e = std::rand() % (z - 1) + 1; // Randomly generate e
+                e = std::rand() % (z - 1000000) + 1000000; // Randomly generate e
             }
 
         

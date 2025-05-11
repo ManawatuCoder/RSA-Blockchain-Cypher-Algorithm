@@ -441,8 +441,6 @@ while (1) {  //main loop
       //cpp_int("64772788767190457819")
       //cpp_int("63760236608357615581")
       std::vector<cpp_int> key = generate_rsa_key(1,1,true);
-
-      cout << "\n\n\n" << key[0] << "      and then     " << key[1] << "  and then  " << key[2] << "\n\n\n";
       std::vector<cpp_int> key2 = generate_rsa_key(pubKeyP1, pubKeyP2);
 
       pubKeyP1 = key2[1];
