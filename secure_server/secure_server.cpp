@@ -433,6 +433,8 @@ while (1) {  //main loop
       cpp_int pubKeyP1 = getPrime();//Random prime for now, to generate key.
       cpp_int pubKeyP2 = getPrime();//Random prime for now, to generate key.
 
+      //cpp_int("64772788767190457819")
+      //cpp_int("63760236608357615581")
       std::vector<cpp_int> key = generate_rsa_key(1,1,true);
       std::vector<cpp_int> key2 = generate_rsa_key(pubKeyP1, pubKeyP2);
 
