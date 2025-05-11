@@ -126,7 +126,14 @@ std::string deNonceify(const char *input, cpp_int NONCE, cpp_int PRIV_KEY, cpp_i
     std::string token;
     
     while (iss >> token){
-        cpp_int cipherVal(token);
+        cpp_int cipherVal;
+        try{
+            cipherVal = cpp_int(token);
+        }catch(const std::exception& e){
+            cout << "Invalid token received by decryption algorithm. Outputting garbage." << endl;
+            return "bad input";
+        }
+        
         decryptedVal = RSADecrypt(cipherVal, PRIV_KEY, PUB_KEY_N);
         char originalChar = static_cast<char>(decryptedVal ^ NONCE);
         NONCE = cipherVal;

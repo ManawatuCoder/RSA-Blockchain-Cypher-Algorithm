@@ -433,6 +433,9 @@ while (1) {  //main loop
       setSeed(); // Prime rng with new key.
       cpp_int pubKeyP1 = getPrime();//Random prime for now, to generate key.
       cpp_int pubKeyP2 = getPrime();//Random prime for now, to generate key.
+      while(pubKeyP2 == pubKeyP1){
+         pubKeyP2 = getPrime();
+      }
 
       cout << pubKeyP1 << endl << pubKeyP2 << endl;
       //cpp_int("64772788767190457819")
@@ -529,6 +532,7 @@ while (1) {  //main loop
             if(tempString2[i] != ' '){
                tempString3 += tempString2[i];
             } else {
+               cout << tempString3 << endl;
                decrypted += (char) RSADecrypt(cpp_int(tempString3), key2[2], key2[0]).convert_to<int>();
                tempString3 = "";
             }
