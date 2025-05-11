@@ -439,6 +439,8 @@ while (1) {  //main loop
       pubKeyP1 = key2[1];
       pubKeyP2 = key2[0];
 
+      std::cout << "Secure servers public key --> e: " << key2[1] << ",  n: " << key2[0] << endl;
+      std::cout << "Secure servers private key --> d: " << key2[2] << ",  n: " << key2[0] << endl << endl;
 
       
       //std::vector<cpp_int> key2 = getCAkeys();
@@ -482,6 +484,8 @@ while (1) {  //main loop
             encryptedStr += temp[i].str() + " ";
          }
 
+         cout << "dCA(e,n) certificate: " << encryptedStr << endl << endl;
+
          //Send through length of key
          int lengthOfEncryptedData = encryptedStr.length();
          // std::cout << lengthOfEncryptedData;
@@ -501,40 +505,41 @@ while (1) {  //main loop
 //********************************************************************		
 //Recieve the encrypted nonce
 //********************************************************************
-int len;
-recv(ns, (char*) (&len), sizeof(len), 0);
+         int len;
+         recv(ns, (char*) (&len), sizeof(len), 0);
 
-char * temp32 = new char[len];
+         char * temp32 = new char[len];
 
-bytes = recv(ns, temp32, len, 0);
-cout << "Bytes received: " << bytes << endl;
-std::string tempString2;
-for(i = 0; i < len; i++){
-   tempString2 += temp32[i];
-}
+         bytes = recv(ns, temp32, len, 0);
+         cout << "Bytes received: " << bytes << endl;
+         std::string tempString2;
+         for(i = 0; i < len; i++){
+            tempString2 += temp32[i];
+         }
 
-string tempString3;
-string decrypted;
-for(i = 0; i < tempString2.length(); i++){
-   if(tempString2[i] != ' '){
-      tempString3 += tempString2[i];
-   } else {
-      decrypted += (char) RSADecrypt(cpp_int(tempString3), key2[2], key2[0]).convert_to<int>();
-      cout << "Decrypted: " << RSADecrypt(cpp_int(tempString3), key2[2], key2[0]).str() << endl;
-      tempString3 = "";
-   }
-}
+         cout << "Encrypted NONCE:  " << tempString2 << endl << endl;
 
-cpp_int NONCE = cpp_int(decrypted);
-cout << "Decrypted NONCE: " << decrypted << endl;
+         string tempString3;
+         string decrypted;
+         for(i = 0; i < tempString2.length(); i++){
+            if(tempString2[i] != ' '){
+               tempString3 += tempString2[i];
+            } else {
+               decrypted += (char) RSADecrypt(cpp_int(tempString3), key2[2], key2[0]).convert_to<int>();
+               tempString3 = "";
+            }
+         }
+
+         cpp_int NONCE = cpp_int(decrypted);
+         cout << "Decrypted NONCE:  " << decrypted << endl;
 		
 //********************************************************************		
 //Communicate with the Client
 //********************************************************************
-	  printf("\n--------------------------------------------\n");
-	  printf("the <<<SERVER>>> is waiting to receive messages.\n");
-      while (1) {
-         n = 0;
+      printf("\n--------------------------------------------\n");
+      printf("the <<<SERVER>>> is waiting to receive messages.\n");
+         while (1) {
+            n = 0;
 //********************************************************************
 //RECEIVE one command (delimited by \r\n)
 //********************************************************************
@@ -549,7 +554,7 @@ cout << "Decrypted NONCE: " << decrypted << endl;
             }
             if (receive_buffer[n] != '\r') n++; /*ignore CRs*/
          }
-			printf("%s\n", receive_buffer);
+			printf("Encrypted message from client:  %s\n\n", receive_buffer);
 
          
          cpp_int privateKey = 16971;
