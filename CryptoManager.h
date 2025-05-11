@@ -18,4 +18,5 @@ std::string nonceify(const char *input, cpp_int NONCE, cpp_int PUB_KEY1, cpp_int
 std::string deNonceify(const char *input, cpp_int NONCE, cpp_int PRIV_KEY, cpp_int PUB_KEY_N);
 cpp_int getPrime();
 cpp_int getNonce();
+void setSeed();
 #endif // SOMETHINGELSE_H

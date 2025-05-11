@@ -430,9 +430,11 @@ while (1) {  //main loop
       //int eCA = 24305; //For testing
 
       //*****************
+      setSeed(); // Prime rng with new key.
       cpp_int pubKeyP1 = getPrime();//Random prime for now, to generate key.
       cpp_int pubKeyP2 = getPrime();//Random prime for now, to generate key.
 
+      cout << pubKeyP1 << endl << pubKeyP2 << endl;
       //cpp_int("64772788767190457819")
       //cpp_int("63760236608357615581")
       std::vector<cpp_int> key = generate_rsa_key(1,1,true);
@@ -558,9 +560,6 @@ while (1) {  //main loop
          }
 			printf("Encrypted message from client:  %s\n\n", receive_buffer);
 
-         
-         cpp_int privateKey = 16971;
-         cpp_int serverPubKey2 = 25777;
          std::string decrypto = deNonceify(receive_buffer,NONCE.convert_to<int>(),key2[2],key2[0]);
          strncpy(receive_buffer, decrypto.c_str(), decrypto.length()+1);
 

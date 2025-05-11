@@ -28,13 +28,15 @@ vector<cpp_int> primes = {//Ten randomly chosen 64 bit primes
                         };
 
 cpp_int getNonce() {
-    std::srand(std::time(0)); // Seed the random number generator
-    cpp_int randNum = std::rand() + (INT32_MAX/2); // Random number between 0 and 999999
+    cpp_int randNum = std::rand() + (INT32_MAX/2);
     return randNum;
 }
 
-cpp_int getPrime(){
+void setSeed(){
     srand(time(0));
+}
+
+cpp_int getPrime(){
     int randPrime = rand() % 9;
     return primes.at(randPrime);
 }
