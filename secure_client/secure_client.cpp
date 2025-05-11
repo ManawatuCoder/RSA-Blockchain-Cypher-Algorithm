@@ -436,6 +436,12 @@ int lengthOfEncryptedData = encryptedStr.length();
 	//send(s, (char*) (sizeof(NONCE)), sizeof(int), 0);
 	//send(s, NONCEstring.c_str(), sizeof(NONCE), 0);
 
+	recv(s, receive_buffer, 256, 0);
+	if (bytes > 0) {
+		receive_buffer[bytes] = '\0';
+		printf("ACK received: %s\n", receive_buffer);
+	}
+
 
 //*******************************************************************
 //Get input while user don't type "."

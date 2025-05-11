@@ -536,7 +536,9 @@ while (1) {  //main loop
 
          cpp_int NONCE = cpp_int(decrypted);
          cout << "Decrypted NONCE:  " << decrypted << endl;
-		
+         cout << "ACK 220 nonce OK" << endl;
+         string ack = "ACK 220 nonce OK";
+		   send(ns, ack.c_str(), ack.length(), 0);
 //********************************************************************		
 //Communicate with the Client
 //********************************************************************
