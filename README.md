@@ -1,4 +1,4 @@
-Assignment: RSA blockchaining algorithm
+Assignment: Implement a RSA blockchain cypher algorithm
 Implement a combination of encryption tactics to allow information to be securely transmitted between a client and server.
 CA certificate is simplified for convenience sake.
 Client and server code were largely provided by Napoleon Reyes.
